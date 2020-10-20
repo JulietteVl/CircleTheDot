@@ -1,5 +1,5 @@
 from PyQt5.QtCore import *
-from model import *
+from CtD_model import *
 
 class BaseController:
     def __init__(self):
