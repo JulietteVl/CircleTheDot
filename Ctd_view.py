@@ -9,7 +9,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from controler import *
+from controller import *
 
 class GameScene(QGraphicsScene):
         def __init__(self, parent, controler):
