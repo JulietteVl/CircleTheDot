@@ -14,6 +14,6 @@ class BaseController:
         for client in self.clients:
             client.refresh()
 
-class CtDcontroller(BaseController):
+class CtDController(BaseController):
     def __init__(self):
         super().__init__()
