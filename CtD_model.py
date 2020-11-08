@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 20 14:07:37 2020
-
-@author: julie
-"""
-
 import random
 
 class Fuyard:
@@ -29,10 +22,20 @@ class Board:
         self.nb_cond = nb_cond
         self.fuy_width = fw
         self.fuy_height = fh
-        self.fuyard = Fuyard(int(self.width/2)+random.randint(-self.fuy_width/2,self.fuy_width/2),int(self.height/2)+random.randint(-self.fuy_height/2,self.fuy_height/2))
+        self.fuyard = Fuyard((random.randint(int(self.width/2-self.fuy_width/2), 
+                                             int(self.width/2+self.fuy_width/2))),
+                             (random.randint(int(self.height/2-self.fuy_height/2),
+                                             int(self.height/2+self.fuy_height/2))))
         
         
     def cond(self,x,y):
         pos = x,y
         if pos not in self.l_cond:
             self.l_cond.append(pos)
+
+class Game:
+    def __init__(self):
+        pass
+    
+    def saveGame(self):
+        pass

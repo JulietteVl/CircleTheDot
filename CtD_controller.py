@@ -1,5 +1,5 @@
 from PyQt5.QtCore import *
-from CtD_model import *
+import CtD_model as CtD
 
 class BaseController:
     def __init__(self):
@@ -17,3 +17,7 @@ class BaseController:
 class CtDController(BaseController):
     def __init__(self):
         super().__init__()
+    
+    def start(self):
+        self.myBoard = CtD.Board()
+        self.refresh_all('')

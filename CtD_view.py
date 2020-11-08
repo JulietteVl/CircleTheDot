@@ -16,12 +16,28 @@ class Scene(QGraphicsScene):
         super().__init__(parent)
         self.controller = controller
         self.controller.add_client(self)
-        l = 512;
-        self.setSceneRect(0,0,l,l)
+        self.l = 512;
+        self.setSceneRect(0,0,self.l,self.l)
         
     def refresh(self):
         # Scene
         self.clear()
+        pen = QPen(Qt.black)
+        brush = QBrush(Qt.gray)
+        self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
+        
+        board = self.controller.myBoard
+        w = board.width
+        h = board.height
+        self.cellSpace = self.l//(max(w,h)+1)
+        self.cellSize = self.cellSpace - 5
+        self.border = (self.l-self.cellSpace*(max(w,h)))//2
+        print(self.cellSpace, self.cellSize, self.border)
+        cells = []
+        for j in range(h):
+            for i in range(w):
+                cells.append(self.addRect(0,0,self.cellSize,self.cellSize,pen,QBrush(Qt.white)))
+                cells[j*h+i].setPos(self.border+i*self.cellSpace,self.border+(2*j+i%2)*(self.cellSpace//2))
 
 class View(QGraphicsView):
     def __init__(self, parent, controller):
@@ -43,7 +59,21 @@ class Params(QWidget):
         self.controller = controller
         self.controller.add_client(self)
         
-        # This is for player input
+        # Widgets
+        self.start_button = QPushButton('Start')
+        
+        # Slots
+        self.start_button.clicked.connect(self.on_start)
+        
+        # Layout
+        vLayout = QVBoxLayout()
+        vLayout.addWidget(self.start_button)
+        vLayout.addStretch()
+        
+        self.setLayout(vLayout)
+    
+    def on_start(self):
+        self.controller.start()
     
     def refresh(self):
         pass
