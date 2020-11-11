@@ -15,18 +15,26 @@ class Fuyard:
 
 
 class Board:
-    def __init__(self,w=10,h=10,nb_cond=6,fw=3,fh=3):
+    def __init__(self,w=11,h=12,nb_cond=6,fw=3,fh=3):
         self.width = w
         self.height = h
-        self.l_cond = []
         self.nb_cond = nb_cond
+        self.l_cond = []
         self.fuy_width = fw
         self.fuy_height = fh
         self.fuyard = Fuyard((random.randint(int(self.width/2-self.fuy_width/2), 
                                              int(self.width/2+self.fuy_width/2))),
                              (random.randint(int(self.height/2-self.fuy_height/2),
                                              int(self.height/2+self.fuy_height/2))))
-        
+        while len(self.l_cond) != nb_cond:
+            for i in range(nb_cond-len(self.l_cond)):
+                pos = (random.randint(0,w-1),random.randint(0,h-1))
+                if pos != (self.fuyard.x,self.fuyard.y):         # check that the fuyard is not on a condemned case.
+                    self.l_cond.append((random.randint(0,w-1),random.randint(0,h-1))) 
+                    # condemn a case. one can use a tuple as a condemned case is not mutable. 
+                    # It also enables me to use set, which can be used only on hashable elements.
+            self.l_cond = list(set(self.l_cond))                # remove duplicates
+        print(self.l_cond)
         
     def cond(self,x,y):
         pos = x,y
