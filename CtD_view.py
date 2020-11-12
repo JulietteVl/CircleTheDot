@@ -38,8 +38,8 @@ class Scene(QGraphicsScene):
         cells = []
         for j in range(h):
             for i in range(w):
-                cells.append(self.addRect(0,0,self.cellSize,self.cellSize,pen,QBrush(Qt.white)))
-                cells[j*w+i].setPos(self.border+i*self.cellSpace,self.border+(2*j+i%2)*(self.cellSpace//2))
+                 cells.append(self.addRect(0,0,self.cellSize,self.cellSize,pen,QBrush(Qt.white)))
+                 cells[j*w+i].setPos(self.border+i*self.cellSpace,self.border+(2*j+i%2)*(self.cellSpace//2))
         
         # Condemned cells
         l_cond = board.l_cond
@@ -48,7 +48,15 @@ class Scene(QGraphicsScene):
             i = pos[0]
             j = pos[1]
             cond_cells.append(self.addRect(0,0,self.cellSize,self.cellSize,pen,QBrush(Qt.red)))
-            cond_cells[l].setPos(self.border+i*self.cellSpace,self.border+(2*j+i%2)*(self.cellSpace//2))
+            cond_cells[l].setPos(cells[j*w+i].scenePos())
+        
+        # fugitive
+        fugitive = board.fugitive
+        i = fugitive.x
+        j = fugitive.y
+        space = 2
+        fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
+        fugitiveGraphic.setPos(cells[j*w+i].pos())
 
 class View(QGraphicsView):
     def __init__(self, parent, controller):
