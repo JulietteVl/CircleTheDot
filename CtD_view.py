@@ -57,6 +57,14 @@ class Scene(QGraphicsScene):
         space = 2
         fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
         fugitiveGraphic.setPos(cells[j*w+i].pos())
+        
+    def mousePressEvent(self, e):
+        x = e.scenePos().x()
+        y = e.scenePos().y()
+        print(((x-self.border)/self.cellSpace),((y-self.border)/self.cellSpace))
+        i = int((x-self.border)/self.cellSpace)
+        j = int((y-self.border)/self.cellSpace-(i)%2/2)
+        self.controller.condemn(i,j)
 
 class View(QGraphicsView):
     def __init__(self, parent, controller):
@@ -120,9 +128,6 @@ class Window(QMainWindow):
         self.setWindowTitle("Circle the dot")
         mainwidget = Widget(self, controller)
         self.setCentralWidget(mainwidget)
-
-#    def keyPressEvent(self, e):
-#        self.controller.process_keypress(e.key())
 
     def refresh(self):
         pass

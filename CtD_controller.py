@@ -26,3 +26,7 @@ class CtDController(BaseController):
     def start(self):
         self.myBoard = CtD.Board(self.w, self.h, self.nb_cond, self.fw, self.fh)
         self.refresh_all('')
+    
+    def condemn(self,i,j):
+        self.myBoard.cond(i,j)
+        self.refresh_all('')
