@@ -61,7 +61,6 @@ class Scene(QGraphicsScene):
     def mousePressEvent(self, e):
         x = e.scenePos().x()
         y = e.scenePos().y()
-        print(((x-self.border)/self.cellSpace),((y-self.border)/self.cellSpace))
         i = int((x-self.border)/self.cellSpace)
         j = int((y-self.border)/self.cellSpace-(i)%2/2)
         self.controller.condemn(i,j)

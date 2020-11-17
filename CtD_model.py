@@ -5,8 +5,28 @@ class Fugitive:
         self.x = x
         self.y = y
     
-    def move(self,w,h,l_cond):
-        pass
+    def move(self, board, level = 0):
+        l_cond = board.l_cond
+        if level ==0:
+            choices = [(self.x,self.y+1),  #above
+                       (self.x,self.y-1),   #below
+                       (self.x+1,self.y),
+                       (self.x-1,self.y)]
+            if self.x%2 == 0:
+                choices.append((self.x+1,self.y-1))
+                choices.append((self.x-1,self.y-1))
+            else:
+                choices.append((self.x+1,self.y+1))
+                choices.append((self.x-1,self.y+1))
+            for c in choices.copy():
+                if (c in board.l_cond):
+                    choices.remove(c)
+            if len(choices) == 0:
+                return("stuck")
+            pos = random.choice(choices)
+            self.x = pos[0]
+            self.y = pos[1]
+            return("free")
     
     def __repr__(self):
         return f"The fugitive is at (x={self.x:2d} ; y={self.y:2d})"
@@ -39,6 +59,8 @@ class Board:
         pos = x,y
         if pos not in self.l_cond:
             self.l_cond.append(pos)
+            return 1
+        return 0
 
 class Game:
     def __init__(self):
