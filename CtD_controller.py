@@ -23,9 +23,13 @@ class CtDController(BaseController):
         self.nb_cond = 6
         self.fw = 3
         self.fh = 3
+        self.state = 0 #
     
     def start(self):
-        self.myBoard = CtD.Board(self.w, self.h, self.nb_cond)
+        if self.nb_cond+1>self.w*self.h:
+            print("invalid values") 
+            return 0
+        self.myBoard = CtD.Board(self.w, self.h, self.nb_cond, self.fw, self.fh)
 #        self.fugitive = CtD.Fugitive((random.randint(int(self.w/2-self.fw/2), 
 #                                                     int(self.w/2+self.fw/2))),
 #                                     (random.randint(int(self.h/2-self.fh/2),

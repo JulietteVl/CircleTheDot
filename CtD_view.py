@@ -64,6 +64,17 @@ class Scene(QGraphicsScene):
         i = int((x-self.border)/self.cellSpace)
         j = int((y-self.border)/self.cellSpace-(i)%2/2)
         self.controller.condemn(i,j)
+        
+    def game_over(self):
+        pen = QPen(Qt.black, 1)
+        brush = QBrush(Qt.red)
+        font = QFont('Arial',24,QFont.Bold)
+        self.goTxt = self.addText('GAME OVER :3',font)
+#        wTxt = self.goTxt.boundingRect().width
+        
+        self.goTxt.setDefaultTextColor(Qt.red)
+        self.goTxt.setPos(50,50)     
+        #self.controller.game_over()
 
 class View(QGraphicsView):
     def __init__(self, parent, controller):
@@ -87,18 +98,31 @@ class Params(QWidget):
         
         # Widgets
         self.start_button = QPushButton('Start')
+        self.gridWidth_box = QSpinBox()
+        self.gridHeight_box = QSpinBox()
+        
+        # Default value
+        self.gridWidth_box.setValue(11)
+        self.gridHeight_box.setValue(12)
         
         # Slots
         self.start_button.clicked.connect(self.on_start)
         
         # Layout
+        self.formLayout = QFormLayout()
+        self.formLayout.addRow('Grid Width', self.gridWidth_box)
+        self.formLayout.addRow('Grid Height', self.gridHeight_box)
+        
+        
         vLayout = QVBoxLayout()
+        vLayout.addLayout(self.formLayout)
         vLayout.addWidget(self.start_button)
         vLayout.addStretch()
-        
         self.setLayout(vLayout)
     
     def on_start(self):
+        self.controller.w = self.gridWidth_box.value()
+        self.controller.h = self.gridHeight_box.value()
         self.controller.start()
     
     def refresh(self):
