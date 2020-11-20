@@ -5,11 +5,11 @@ Created on Tue Oct 20 14:08:06 2020
 @author: julie
 """
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import*
+from PyQt5.QtGui import*
+from PyQt5.QtWidgets import*
 
-from CtD_controller import *
+from CtD_controller import*
 
 class Scene(QGraphicsScene):
     def __init__(self, parent, controller):
@@ -100,10 +100,12 @@ class Params(QWidget):
         self.start_button = QPushButton('Start')
         self.gridWidth_box = QSpinBox()
         self.gridHeight_box = QSpinBox()
+        self.gridInit_boxes = QSpinBox()
         
         # Default value
         self.gridWidth_box.setValue(11)
         self.gridHeight_box.setValue(12)
+        self.gridInit_boxes.setValue(6)
         
         # Slots
         self.start_button.clicked.connect(self.on_start)
@@ -112,6 +114,7 @@ class Params(QWidget):
         self.formLayout = QFormLayout()
         self.formLayout.addRow('Grid Width', self.gridWidth_box)
         self.formLayout.addRow('Grid Height', self.gridHeight_box)
+        self.formLayout.addRow('Initial red boxes', self.gridInit_boxes)
         
         
         vLayout = QVBoxLayout()
@@ -123,6 +126,7 @@ class Params(QWidget):
     def on_start(self):
         self.controller.w = self.gridWidth_box.value()
         self.controller.h = self.gridHeight_box.value()
+        self.controller.nb_cond = self.gridInit_boxes.value()
         self.controller.start()
     
     def refresh(self):
