@@ -5,11 +5,14 @@ Created on Tue Oct 20 14:08:06 2020
 @author: julie
 """
 
-from PyQt5.QtCore import*
-from PyQt5.QtGui import*
-from PyQt5.QtWidgets import*
+import os,sys
 
-from CtD_controller import*
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+from CtD_controller import *
+
 
 class Scene(QGraphicsScene):
     def __init__(self, parent, controller):
@@ -61,11 +64,14 @@ class Scene(QGraphicsScene):
     def mousePressEvent(self, e):
         x = e.scenePos().x()
         y = e.scenePos().y()
-        i = int((x-self.border)/self.cellSpace)
-        j = int((y-self.border)/self.cellSpace-(i)%2/2)
-        self.controller.condemn(i,j)
+        try:
+            i = int((x-self.border)/self.cellSpace)
+            j = int((y-self.border)/self.cellSpace-(i)%2/2)
+            self.controller.condemn(i,j)
+        except:
+            pass
         
-    def game_over(self):
+    def game_over(self): #not called anywhere yet. Not tested either
         pen = QPen(Qt.black, 1)
         brush = QBrush(Qt.red)
         font = QFont('Arial',24,QFont.Bold)
@@ -97,10 +103,12 @@ class Params(QWidget):
         self.controller.add_client(self)
         
         # Widgets
-        self.start_button = QPushButton('Start')
+        self.start_button = QPushButton('New game')
         self.gridWidth_box = QSpinBox()
         self.gridHeight_box = QSpinBox()
         self.gridInit_boxes = QSpinBox()
+        self.searchPath_button = QPushButton("browse")
+        self.save_button = QPushButton("Save game")
         
         # Default value
         self.gridWidth_box.setValue(11)
@@ -108,7 +116,9 @@ class Params(QWidget):
         self.gridInit_boxes.setValue(6)
         
         # Slots
+        self.searchPath_button.clicked.connect(self.on_load)
         self.start_button.clicked.connect(self.on_start)
+        self.save_button.clicked.connect(self.on_save)
         
         # Layout
         self.formLayout = QFormLayout()
@@ -116,10 +126,14 @@ class Params(QWidget):
         self.formLayout.addRow('Grid Height', self.gridHeight_box)
         self.formLayout.addRow('Initial red boxes', self.gridInit_boxes)
         
+        self.formLayout2 = QFormLayout()
+        self.formLayout2.addRow('Load game',self.searchPath_button)
         
         vLayout = QVBoxLayout()
         vLayout.addLayout(self.formLayout)
         vLayout.addWidget(self.start_button)
+        vLayout.addLayout(self.formLayout2)
+        vLayout.addWidget(self.save_button)
         vLayout.addStretch()
         self.setLayout(vLayout)
     
@@ -128,6 +142,26 @@ class Params(QWidget):
         self.controller.h = self.gridHeight_box.value()
         self.controller.nb_cond = self.gridInit_boxes.value()
         self.controller.start()
+        
+    def on_load(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getOpenFileName(self,"Load game", "","All Files (*);;Python Files (*.py)", options=options)
+        try:
+            name=os.path.basename(fileName)
+            self.searchPath_button.setText(name)
+        except:
+            print('There was an error with the file submitted')
+            # ideally there could be a logbox where the controller would send an error message.
+            return(0)
+#        try:
+        self.controller.load_game(fileName)
+#        except:
+#            print("the file submitted does not have the expected layout")
+    
+    def on_save(self):
+        fileName = QFileDialog.getSaveFileName(self,"Select checkpoint", "","All Files(*)")
+        self.controller.save_game(fileName)
     
     def refresh(self):
         pass
