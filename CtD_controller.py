@@ -25,7 +25,7 @@ class CtDController(BaseController):
         self.nb_cond = 6
         self.fw = 3
         self.fh = 3
-        self.state = 0 #
+        self.state = 'escaping' #
     
     def start(self):
         if self.nb_cond+1>self.w*self.h:
@@ -63,7 +63,8 @@ class CtDController(BaseController):
     def next(self):
         #self.refresh_all('')
         #wait(0.5)
-        state = self.myBoard.fugitive.move(self.myBoard)
+        self.state = self.myBoard.fugitive.move(self.myBoard)
         self.refresh_all('')
         print(state)
+        
         
