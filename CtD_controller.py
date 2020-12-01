@@ -28,6 +28,7 @@ class CtDController(BaseController):
         self.state = 'escaping' #
     
     def start(self):
+        self.state = 'escaping'
         if self.nb_cond+1>self.w*self.h:
             print("invalid values") 
             return 0
