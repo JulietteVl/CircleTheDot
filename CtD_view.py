@@ -61,6 +61,12 @@ class Scene(QGraphicsScene):
         fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
         fugitiveGraphic.setPos(cells[j*w+i].pos())
         
+        if self.controller.state == 'stuck':
+             self.game_win()
+        
+        elif self.controller.state == 'free':
+             self.game_over()
+        
     def mousePressEvent(self, e):
         x = e.scenePos().x()
         y = e.scenePos().y()
@@ -71,16 +77,26 @@ class Scene(QGraphicsScene):
         except:
             pass
         
-    def game_over(self): #not called anywhere yet. Not tested either
-        pen = QPen(Qt.black, 1)
-        brush = QBrush(Qt.red)
-        font = QFont('Arial',24,QFont.Bold)
-        self.goTxt = self.addText('GAME OVER :3',font)
-#        wTxt = self.goTxt.boundingRect().width
+    def game_win(self):
+        self.clear()
+        pen = QPen(Qt.black)
+        brush = QBrush(Qt.gray)
+        self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
+        font = QFont('Arial',20,QFont.Bold)
+        self.gwTxt = self.addText('CONGRATULATIONS, YOU WON !',font)
+        self.gwTxt.setDefaultTextColor(Qt.black)
+        self.gwTxt.setPos(50,50)
         
-        self.goTxt.setDefaultTextColor(Qt.red)
-        self.goTxt.setPos(50,50)     
-        #self.controller.game_over()
+        
+    def game_over(self):
+        self.clear()
+        pen = QPen(Qt.black)
+        brush = QBrush(Qt.gray)
+        self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
+        font = QFont('Arial',24,QFont.Bold)
+        self.goTxt = self.addText('GAME OVER !',font)
+        self.goTxt.setDefaultTextColor(Qt.black)
+        self.goTxt.setPos(50,50)
 
 class View(QGraphicsView):
     def __init__(self, parent, controller):
@@ -107,7 +123,7 @@ class Params(QWidget):
         self.gridWidth_box = QSpinBox()
         self.gridHeight_box = QSpinBox()
         self.gridInit_boxes = QSpinBox()
-        self.searchPath_button = QPushButton("browse")
+        self.searchPath_button = QPushButton("Browse")
         self.save_button = QPushButton("Save game")
         
         # Default value
