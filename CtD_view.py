@@ -85,7 +85,7 @@ class Scene(QGraphicsScene):
         font = QFont('Arial',20,QFont.Bold)
         self.gwTxt = self.addText('CONGRATULATIONS, YOU WON !',font)
         self.gwTxt.setDefaultTextColor(Qt.black)
-        self.gwTxt.setPos(50,50)
+        self.gwTxt.setPos(sceneRect().height()/2,sceneRect().width()/2)
         
         
     def game_over(self):
@@ -96,7 +96,7 @@ class Scene(QGraphicsScene):
         font = QFont('Arial',24,QFont.Bold)
         self.goTxt = self.addText('GAME OVER !',font)
         self.goTxt.setDefaultTextColor(Qt.black)
-        self.goTxt.setPos(50,50)
+        #self.goTxt.setPos(50,50)
 
 class View(QGraphicsView):
     def __init__(self, parent, controller):
@@ -162,7 +162,7 @@ class Params(QWidget):
     def on_load(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"Load game", "","All Files (*);;Python Files (*.py)", options=options)
+        fileName, _ = QFileDialog.getOpenFileName(self,"Load game","","All Files (*);;Python Files (*.py)", options=options)
         try:
             name=os.path.basename(fileName)
             self.searchPath_button.setText(name)
