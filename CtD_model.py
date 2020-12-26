@@ -80,6 +80,7 @@ class Fugitive:
             if (cx<0) or (cy<0) or (cx>=board.width) or (cy>=board.height):
                 return("free")
             self.x,self.y = best[0]
+            return("escaping")
                     
     def move_hard(self, board, level = 0):
         if (self.x<1) or (self.y<1) or (self.x>=board.width-1) or (self.y>=board.height-1):
