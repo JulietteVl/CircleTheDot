@@ -61,6 +61,12 @@ class Scene(QGraphicsScene):
         fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
         fugitiveGraphic.setPos(cells[j*w+i].pos())
         
+        if self.controller.state == 'stuck':
+             self.game_win()
+        
+        elif self.controller.state == 'free':
+             self.game_over()
+        
     def mousePressEvent(self, e):
         x = e.scenePos().x()
         y = e.scenePos().y()
@@ -71,16 +77,26 @@ class Scene(QGraphicsScene):
         except:
             pass
         
-    def game_over(self): #not called anywhere yet. Not tested either
-        pen = QPen(Qt.black, 1)
-        brush = QBrush(Qt.red)
-        font = QFont('Arial',24,QFont.Bold)
-        self.goTxt = self.addText('GAME OVER :3',font)
-#        wTxt = self.goTxt.boundingRect().width
+    def game_win(self):
+        self.clear()
+        pen = QPen(Qt.black)
+        brush = QBrush(Qt.gray)
+        self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
+        font = QFont('Arial',20,QFont.Bold)
+        self.gwTxt = self.addText('CONGRATULATIONS, YOU WON !',font)
+        self.gwTxt.setDefaultTextColor(Qt.black)
+        self.gwTxt.setPos(sceneRect().height()/2,sceneRect().width()/2)
         
-        self.goTxt.setDefaultTextColor(Qt.red)
-        self.goTxt.setPos(50,50)     
-        #self.controller.game_over()
+        
+    def game_over(self):
+        self.clear()
+        pen = QPen(Qt.black)
+        brush = QBrush(Qt.gray)
+        self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
+        font = QFont('Arial',24,QFont.Bold)
+        self.goTxt = self.addText('GAME OVER !',font)
+        self.goTxt.setDefaultTextColor(Qt.black)
+        #self.goTxt.setPos(50,50)
 
 class View(QGraphicsView):
     def __init__(self, parent, controller):
@@ -107,24 +123,29 @@ class Params(QWidget):
         self.gridWidth_box = QSpinBox()
         self.gridHeight_box = QSpinBox()
         self.gridInit_boxes = QSpinBox()
-        self.searchPath_button = QPushButton("browse")
+        self.level_box = QComboBox()
+        self.searchPath_button = QPushButton("Browse")
         self.save_button = QPushButton("Save game")
+        
         
         # Default value
         self.gridWidth_box.setValue(11)
         self.gridHeight_box.setValue(12)
         self.gridInit_boxes.setValue(6)
+        self.level_box.addItems(['1','2','3'])
         
         # Slots
         self.searchPath_button.clicked.connect(self.on_load)
         self.start_button.clicked.connect(self.on_start)
         self.save_button.clicked.connect(self.on_save)
+        self.level_box.currentTextChanged.connect(self.change_level)
         
         # Layout
         self.formLayout = QFormLayout()
         self.formLayout.addRow('Grid Width', self.gridWidth_box)
         self.formLayout.addRow('Grid Height', self.gridHeight_box)
         self.formLayout.addRow('Initial red boxes', self.gridInit_boxes)
+        self.formLayout.addRow('Fugitive level',self.level_box)
         
         self.formLayout2 = QFormLayout()
         self.formLayout2.addRow('Load game',self.searchPath_button)
@@ -146,7 +167,7 @@ class Params(QWidget):
     def on_load(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"Load game", "","All Files (*);;Python Files (*.py)", options=options)
+        fileName, _ = QFileDialog.getOpenFileName(self,"Load game","","All Files (*);;Python Files (*.py)", options=options)
         try:
             name=os.path.basename(fileName)
             self.searchPath_button.setText(name)
@@ -163,8 +184,14 @@ class Params(QWidget):
         fileName = QFileDialog.getSaveFileName(self,"Select checkpoint", "","All Files(*)")
         self.controller.save_game(fileName)
     
+    def change_level(self):
+        self.controller.choose_level(int(self.level_box.currentText())-1)
+    
     def refresh(self):
-        pass
+        self.gridWidth_box.setValue(self.controller.w)
+        self.gridHeight_box.setValue(self.controller.h)
+        self.gridInit_boxes.setValue(self.controller.nb_cond)
+        self.level_box.setCurrentIndex(self.controller.level)
     
 class Widget(QWidget):
     def __init__(self, parent, controller):
