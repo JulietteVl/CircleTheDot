@@ -66,6 +66,6 @@ class CtDController(BaseController):
         #wait(0.5)
         self.state = self.myBoard.fugitive.move_hard(self.myBoard)
         self.refresh_all('')
-        print(state)
+        print(self.state)
         
         
