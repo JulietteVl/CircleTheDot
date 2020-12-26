@@ -7,29 +7,28 @@ class Fugitive:
     
     def move(self, board, level = 0):
         l_cond = board.l_cond
-        if level ==0:
-            choices = [(self.x,self.y+1),  #above
-                       (self.x,self.y-1),   #below
-                       (self.x+1,self.y),
-                       (self.x-1,self.y)]
-            if self.x%2 == 0:
-                choices.append((self.x+1,self.y-1))
-                choices.append((self.x-1,self.y-1))
-            else:
-                choices.append((self.x+1,self.y+1))
-                choices.append((self.x-1,self.y+1))
-            for c in choices.copy():
-                if (c in board.l_cond):
-                    choices.remove(c)
-            if len(choices) == 0:
-                return("stuck")
-            
-            pos = random.choice(choices)
-            if (pos[0]<0) or (pos[1]<0) or (pos[0]>=board.width) or (pos[1]>=board.height):
-                return("free")
-            self.x = pos[0]
-            self.y = pos[1]
-            return("escaping")
+        choices = [(self.x,self.y+1),  #above
+                   (self.x,self.y-1),   #below
+                   (self.x+1,self.y),
+                   (self.x-1,self.y)]
+        if self.x%2 == 0:
+            choices.append((self.x+1,self.y-1))
+            choices.append((self.x-1,self.y-1))
+        else:
+            choices.append((self.x+1,self.y+1))
+            choices.append((self.x-1,self.y+1))
+        for c in choices.copy():
+            if (c in board.l_cond):
+                choices.remove(c)
+        if len(choices) == 0:
+            return("stuck")
+        
+        pos = random.choice(choices)
+        if (pos[0]<0) or (pos[1]<0) or (pos[0]>=board.width) or (pos[1]>=board.height):
+            return("free")
+        self.x = pos[0]
+        self.y = pos[1]
+        return("escaping")
     
     def move_moy(self, board, level = 0 ):
         paths = []
@@ -42,40 +41,38 @@ class Fugitive:
             cy = self.y
             while state == "escaping" and len(current_path) < 20:
                 l_cond = board.l_cond
-                if level == 0:
-                    choices = [(cx,cy+1),   #above
-                               (cx,cy-1),   #below
-                               (cx+1,cy),
-                               (cx-1,cy)]
-                    if cx%2 == 0:
-                        choices.append((cx+1,cy-1))
-                        choices.append((cx-1,cy-1))
-                    else:
-                        choices.append((cx+1,cy+1))
-                        choices.append((cx-1,cy+1))
-                    for c in choices.copy():
-                        if (c in board.l_cond):
-                            choices.remove(c)
-                        if (c in current_path):
-                            choices.remove(c)
-                    if len(choices) == 0:
-                        state = "stuck"
+                choices = [(cx,cy+1),   #above
+                           (cx,cy-1),   #below
+                           (cx+1,cy),
+                           (cx-1,cy)]
+                if cx%2 == 0:
+                    choices.append((cx+1,cy-1))
+                    choices.append((cx-1,cy-1))
+                else:
+                    choices.append((cx+1,cy+1))
+                    choices.append((cx-1,cy+1))
+                for c in choices.copy():
+                    if (c in board.l_cond):
+                        choices.remove(c)
+                    if (c in current_path):
+                        choices.remove(c)
+                if len(choices) == 0:
+                    state = "stuck"
+                else :
+                    pos = random.choice(choices)
+                    if (pos[0]<0) or (pos[1]<0) or (pos[0]>=board.width) or (pos[1]>=board.height):
+                        state = "free"
                     else :
-                        pos = random.choice(choices)
-                        if (pos[0]<0) or (pos[1]<0) or (pos[0]>=board.width) or (pos[1]>=board.height):
-                            state = "free"
-                        else :
-                            state = "escaping"
-                        cx = pos[0]
-                        cy = pos[1]
-                        cp = cx,cy
-                        current_path.append(cp)
+                        state = "escaping"
+                    cx = pos[0]
+                    cy = pos[1]
+                    cp = cx,cy
+                    current_path.append(cp)
             if state == "free":                
                 paths.append(current_path)
         
         if not paths:
-            ret = self.move(board)
-            return(ret)
+            return(self.move(board))
         else:
             paths.sort(key=len)
             best = paths[0]
@@ -97,36 +94,33 @@ class Fugitive:
             for p in paths.copy():
                 ct = p[len(p)-1]
                 cx,cy = ct
-                if level == 0:
-                    choices = [(cx,cy+1),   #above
-                               (cx,cy-1),   #below
-                               (cx+1,cy),
-                               (cx-1,cy)]
-                    if cx%2 == 0:
-                        choices.append((cx+1,cy-1))
-                        choices.append((cx-1,cy-1))
-                    else:
-                        choices.append((cx+1,cy+1))
-                        choices.append((cx-1,cy+1))
-                    for c in choices.copy():
-                        if (c in board.l_cond):
-                            choices.remove(c)
-                        elif (c in p):
-                            choices.remove(c)
-                    if not choices:
-                        ret = self.move(board)
-                        return(ret)
-                    else:
-                        paths.remove(p)
-                        for c in choices :
-                            if (c[0]<0) or (c[1]<0) or (c[0]>=board.width) or (c[1]>=board.height):
-                                state = "free"
-                                temp = p[1]
-                                self.x,self.y = temp
-                            else:
-                                p.append(c)
-                                paths.append(p.copy())
-                                p.remove(c)
+                choices = [(cx,cy+1),   #above
+                           (cx,cy-1),   #below
+                           (cx+1,cy),
+                           (cx-1,cy)]
+                if cx%2 == 0:
+                    choices.append((cx+1,cy-1))
+                    choices.append((cx-1,cy-1))
+                else:
+                    choices.append((cx+1,cy+1))
+                    choices.append((cx-1,cy+1))
+                for c in choices.copy():
+                    if (c in board.l_cond):
+                        choices.remove(c)
+                    elif (c in p):
+                        choices.remove(c)
+                if not choices:
+                    return(self.move(board))
+                else:
+                    paths.remove(p)
+                    for c in choices:
+                        if (c[0]<0) or (c[1]<0) or (c[0]>=board.width) or (c[1]>=board.height):
+                            state = "free"
+                            self.x,self.y = p[1]
+                        else:
+                            p.append(c)
+                            paths.append(p.copy())
+                            p.remove(c)
         return("escaping")                      
         
     
@@ -165,10 +159,3 @@ class Board:
             self.l_cond.append(pos)
             return 1
         return 0
-
-class Game:
-    def __init__(self):
-        pass
-    
-    def saveGame(self):
-        pass
