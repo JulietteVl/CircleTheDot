@@ -22,6 +22,9 @@ class BaseController:
 class CtDController(BaseController):
     def __init__(self):
         super().__init__()
+        self.mode = 'chaser'
+        self.best_score = 0
+        self.nbTurns = 0
         self.w = 11
         self.h = 12
         self.nb_cond = 6
@@ -44,7 +47,7 @@ class CtDController(BaseController):
     
     def load_game(self,file):
         f = open(file,'rb')
-        [self.w, self.h, self.nb_cond, self.fw, self.fh, self.level, x, y, l_cond] = pickle.load(f)
+        [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, self.fw, self.fh, self.level, x, y, l_cond] = pickle.load(f)
         self.start()
         self.myBoard.fugitive.x = x
         self.myBoard.fugitive.y = y
@@ -54,7 +57,7 @@ class CtDController(BaseController):
     def save_game(self, file):
         try:
             f = open(file[0],'wb')
-            params = [self.w, self.h, self.nb_cond, self.fw, self.fh,self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y,self.myBoard.l_cond]
+            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, self.fw, self.fh,self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y,self.myBoard.l_cond]
             pickle.dump(params,f,pickle.HIGHEST_PROTOCOL)
         except:
             print('Game could not be saved')

@@ -1,35 +1,41 @@
 import random
+from math import sqrt
 
 class Fugitive:
     def __init__(self,x:int,y:int): #,level:int
         self.x = x
         self.y = y
     
-    def move(self, board):
-        choices = [(self.x,self.y+1),  #above
-                   (self.x,self.y-1),   #below
-                   (self.x+1,self.y),
-                   (self.x-1,self.y)]
-        if self.x%2 == 0:
-            choices.append((self.x+1,self.y-1))
-            choices.append((self.x-1,self.y-1))
+    def get_choices(self, board, cx, cy):
+        choices = [(cx,cy+1),   #above
+                   (cx,cy-1),   #below
+                   (cx+1,cy),
+                   (cx-1,cy)]
+        if cx%2 == 0:
+            choices.append((cx+1,cy-1))
+            choices.append((cx-1,cy-1))
         else:
-            choices.append((self.x+1,self.y+1))
-            choices.append((self.x-1,self.y+1))
+            choices.append((cx+1,cy+1))
+            choices.append((cx-1,cy+1))
         for c in choices.copy():
             if (c in board.l_cond):
                 choices.remove(c)
+        
+        return choices
+    
+    def move(self, board):
+        choices = self.get_choices(board, self.x,self.y)
         if len(choices) == 0:
-            return("stuck")
+            return("stuck 0")
         
         pos = random.choice(choices)
         if (pos[0]<0) or (pos[1]<0) or (pos[0]>=board.width) or (pos[1]>=board.height):
-            return("free")
+            return("free 0")
         self.x = pos[0]
         self.y = pos[1]
-        return("escaping")
+        return("escaping 0")
     
-    def move_moy(self, board, level = 0 ):
+    def move_moy(self, board):
         paths = []
         current_path = []
         
@@ -38,21 +44,9 @@ class Fugitive:
             current_path.clear()
             cx = self.x
             cy = self.y
-            while state == "escaping" and len(current_path) < 20:
-                l_cond = board.l_cond
-                choices = [(cx,cy+1),   #above
-                           (cx,cy-1),   #below
-                           (cx+1,cy),
-                           (cx-1,cy)]
-                if cx%2 == 0:
-                    choices.append((cx+1,cy-1))
-                    choices.append((cx-1,cy-1))
-                else:
-                    choices.append((cx+1,cy+1))
-                    choices.append((cx-1,cy+1))
+            while state == "escaping" and len(current_path) < 2*sqrt(self.h*self.w):
+                choices = self.get_choices(board, cx,cy)
                 for c in choices.copy():
-                    if (c in board.l_cond):
-                        choices.remove(c)
                     if (c in current_path):
                         choices.remove(c)
                 if len(choices) == 0:
@@ -77,13 +71,13 @@ class Fugitive:
             best = paths[0]
             cx,cy = best[0]
             if (cx<0) or (cy<0) or (cx>=board.width) or (cy>=board.height):
-                return("free")
+                return("free 1")
             self.x,self.y = best[0]
-            return("escaping")
+            return("escaping 1")
                     
-    def move_hard(self, board, level = 0):
+    def move_hard(self, board):
         if (self.x<1) or (self.y<1) or (self.x>=board.width-1) or (self.y>=board.height-1):
-           return("free")
+           return("free 2")
         paths = []
         cp = []
         t = self.x,self.y
@@ -94,20 +88,9 @@ class Fugitive:
             for p in paths.copy():
                 ct = p[len(p)-1]
                 cx,cy = ct
-                choices = [(cx,cy+1),   #above
-                           (cx,cy-1),   #below
-                           (cx+1,cy),
-                           (cx-1,cy)]
-                if cx%2 == 0:
-                    choices.append((cx+1,cy-1))
-                    choices.append((cx-1,cy-1))
-                else:
-                    choices.append((cx+1,cy+1))
-                    choices.append((cx-1,cy+1))
+                choices = self.get_choices(board,cx,cy)
                 for c in choices.copy():
-                    if (c in board.l_cond):
-                        choices.remove(c)
-                    elif (c in p):
+                    if (c in p):
                         choices.remove(c)
                 if not choices:
                     return(self.move(board))
@@ -117,12 +100,12 @@ class Fugitive:
                         if (c[0]<0) or (c[1]<0) or (c[0]>=board.width) or (c[1]>=board.height):
                             state = "free"
                             self.x,self.y = p[1]
-                            return("escaping")
+                            return("escaping 2")
                         else:
                             p.append(c)
                             paths.append(p.copy())
                             p.remove(c)
-        return("escaping")                      
+        return("escaping 2")                      
         
     
     def __repr__(self):
