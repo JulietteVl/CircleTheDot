@@ -34,44 +34,58 @@ class CtDController(BaseController):
         self.level = 0
     
     def start(self):
+        # create an instance of board, which contains an instance of the fugitive
         self.state = 'escaping'
         if self.nb_cond+1>self.w*self.h:
             print("invalid values") 
             return 0
-        self.myBoard = CtD.Board(self.w, self.h, self.nb_cond, self.fw, self.fh)#floor(sqrt(self.w)), floor(sqrt(self.h)))
-#        self.fugitive = CtD.Fugitive((random.randint(int(self.w/2-self.fw/2), 
-#                                                     int(self.w/2+self.fw/2))),
-#                                     (random.randint(int(self.h/2-self.fh/2),
-#                                                     int(self.h/2+self.fh/2))))
+        self.myBoard = CtD.Board(self.w, self.h, self.nb_cond, self.fw, self.fh)
         self.refresh_all('')
     
     def load_game(self,file):
+        # give to the controller all the characteristics to reconstitute a game
         f = open(file,'rb')
-        [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, self.fw, self.fh, self.level, x, y, l_cond] = pickle.load(f)
-        self.start()
-        self.myBoard.fugitive.x = x
-        self.myBoard.fugitive.y = y
-        self.myBoard.l_cond = l_cond
-        self.refresh_all("")
+        try:
+            [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, self.level, x, y, l_cond] = pickle.load(f)
+            self.start()
+            self.myBoard.fugitive.x = x
+            self.myBoard.fugitive.y = y
+            self.myBoard.l_cond = l_cond
+            self.refresh_all("")
+        except:
+            pass
+        f.close()
     
     def save_game(self, file):
+        # save in a file all the characteristics to reconstitute a game
         try:
             f = open(file[0],'wb')
-            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, self.fw, self.fh,self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y,self.myBoard.l_cond]
+            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond,self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y,self.myBoard.l_cond]
             pickle.dump(params,f,pickle.HIGHEST_PROTOCOL)
+            f.close()
         except:
             print('Game could not be saved')
+        f = open('{}.txt'.format(file[0]),'w')
+        param_names = ["mode", "best_score", "nb_turns", 'width', 'heigth', 'nb_condemned_cells', 'level', 'fugitive_x_position', 'fugitive_y_position']
+        params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y]
+        params = list(map(str, params))
+        for i, param in enumerate(params):
+            f.write('{}: {}\n'.format(param_names[i], param))
+        f.writelines(list(map(str, self.myBoard.l_cond)))
+        f.close()
     
     def choose_level(self, level: int):
+        # process level chosen
         self.level = level
     
     def condemn(self,i,j):
+        # mark a case (i,j) as condemned
         condemned = self.myBoard.cond(i,j)
         if condemned:
             self.next()
     
     def next(self):
-        #self.refresh_all('')
+        # Move the fugitive. The strategy depend on the level of the game.
         #wait(0.5)
         if self.level == 0:
             self.state = self.myBoard.fugitive.move(self.myBoard)

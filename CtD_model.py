@@ -7,6 +7,7 @@ class Fugitive:
         self.y = y
     
     def get_choices(self, board, cx, cy):
+        # the 6 adjacent cases, excluding the condemned ones
         choices = [(cx,cy+1),   #above
                    (cx,cy-1),   #below
                    (cx+1,cy),
@@ -24,6 +25,7 @@ class Fugitive:
         return choices
     
     def move(self, board):
+        # random choice. The fugitive is blind.
         choices = self.get_choices(board, self.x,self.y)
         if len(choices) == 0:
             return("stuck 0")
@@ -36,6 +38,8 @@ class Fugitive:
         return("escaping 0")
     
     def move_moy(self, board):
+        # The fugitive makes a significant number of random guesses, 
+        # saves the not to long ones and make the first step of the shortest.
         paths = []
         current_path = []
         
@@ -76,6 +80,7 @@ class Fugitive:
             return("escaping 1")
                     
     def move_hard(self, board):
+        # The fugitive considers all the possible path and make the first step to the shortest.
         if (self.x<1) or (self.y<1) or (self.x>=board.width-1) or (self.y>=board.height-1):
            return("free 2")
         paths = []
@@ -123,7 +128,7 @@ class Board:
         self.fuy_width = fw
         self.fuy_height = fh
         
-        
+        # avoid being outside of the grid:
         self.fugitive = Fugitive((random.randint(max(int(self.width/2-self.fuy_width/2),0), 
                                                  min(int(self.width/2+self.fuy_width/2),self.width-1))),
                                  (random.randint(max(int(self.height/2-self.fuy_height/2),0),
