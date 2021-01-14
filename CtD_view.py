@@ -61,10 +61,13 @@ class Scene(QGraphicsScene):
         fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
         fugitiveGraphic.setPos(cells[j*w+i].pos())
         
-        if self.controller.state == 'stuck':
+        temp = self.controller.state.split()
+        print(temp)
+        
+        if temp[0] == 'stuck':
              self.game_win()
         
-        elif self.controller.state == 'free':
+        elif temp[0] == 'free':
              self.game_over()
         
     def mousePressEvent(self, e):
