@@ -48,7 +48,7 @@ class Fugitive:
             current_path.clear()
             cx = self.x
             cy = self.y
-            while state == "escaping" and len(current_path) < 2*sqrt(self.h*self.w):
+            while state == "escaping" and len(current_path) < 2*sqrt(board.h*board.w):
                 choices = self.get_choices(board, cx,cy)
                 for c in choices.copy():
                     if (c in current_path):
