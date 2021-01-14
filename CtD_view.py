@@ -85,10 +85,10 @@ class Scene(QGraphicsScene):
         pen = QPen(Qt.black)
         brush = QBrush(Qt.gray)
         self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
-        font = QFont('Arial',20,QFont.Bold)
+        font = QFont('Arial',24,QFont.Bold)
         self.gwTxt = self.addText('CONGRATULATIONS, YOU WON !',font)
         self.gwTxt.setDefaultTextColor(Qt.black)
-        self.gwTxt.setPos(sceneRect().height()/2,sceneRect().width()/2)
+        self.gwTxt.setPos(0,4*self.l/10)
         
         
     def game_over(self):
@@ -99,7 +99,7 @@ class Scene(QGraphicsScene):
         font = QFont('Arial',24,QFont.Bold)
         self.goTxt = self.addText('GAME OVER !',font)
         self.goTxt.setDefaultTextColor(Qt.black)
-        #self.goTxt.setPos(50,50)
+        self.goTxt.setPos(6*self.l/20,9*self.l/20)
 
 class View(QGraphicsView):
     def __init__(self, parent, controller):
