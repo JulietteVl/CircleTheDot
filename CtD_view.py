@@ -62,7 +62,7 @@ class Scene(QGraphicsScene):
         fugitiveGraphic.setPos(cells[j*w+i].pos())
         
         temp = self.controller.state.split()
-        print(temp)
+        # print(temp)
         
         if temp[0] == 'stuck':
              self.game_win()
@@ -114,6 +114,20 @@ class View(QGraphicsView):
     
     def refresh(self):
         pass
+
+class message_box(QTextEdit):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+        self.controller.add_client(self)
+        self.setReadOnly(True)
+        # self.setMaximumWidth(440)
+        # self.setMaximumHeight(200)
+
+    def refresh(self):
+        message = self.controller.message
+        if message:
+            self.append(message)
     
 class Params(QWidget):
     def __init__(self, parent, controller):
@@ -129,6 +143,8 @@ class Params(QWidget):
         self.level_box = QComboBox()
         self.searchPath_button = QPushButton("Browse")
         self.save_button = QPushButton("Save game")
+        # Message box
+        self.log_box = message_box(self.controller)
         
         
         # Default value
@@ -136,6 +152,8 @@ class Params(QWidget):
         self.gridHeight_box.setValue(12)
         self.gridInit_boxes.setValue(6)
         self.level_box.addItems(['1','2','3'])
+        self.log_box.clear()
+        self.log_box.append("Welcome to Circle the dot!\n")
         
         # Slots
         self.searchPath_button.clicked.connect(self.on_load)
@@ -159,6 +177,8 @@ class Params(QWidget):
         vLayout.addLayout(self.formLayout2)
         vLayout.addWidget(self.save_button)
         vLayout.addStretch()
+        vLayout.addWidget(self.log_box)
+        
         self.setLayout(vLayout)
     
     def on_start(self):
@@ -175,8 +195,7 @@ class Params(QWidget):
             name=os.path.basename(fileName)
             self.searchPath_button.setText(name)
         except:
-            print('There was an error with the file submitted')
-            # ideally there could be a logbox where the controller would send an error message.
+            log_box.append('There was an error with the file submitted')
             return(0)
 #        try:
         self.controller.load_game(fileName)
@@ -184,8 +203,11 @@ class Params(QWidget):
 #            print("the file submitted does not have the expected layout")
     
     def on_save(self):
-        fileName = QFileDialog.getSaveFileName(self,"Select checkpoint", "","All Files(*)")
-        self.controller.save_game(fileName)
+        try:
+            fileName = QFileDialog.getSaveFileName(self,"Select checkpoint", "","All Files(*)")
+            self.controller.save_game(fileName)
+        except:
+            self.log_box.append("Game could not be saved. Please create a game.\n")
     
     def change_level(self):
         self.controller.choose_level(int(self.level_box.currentText())-1)

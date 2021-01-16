@@ -37,42 +37,73 @@ class CtDController(BaseController):
         # create an instance of board, which contains an instance of the fugitive
         self.state = 'escaping'
         if self.nb_cond+1>self.w*self.h:
-            print("invalid values") 
+            self.refresh_all("Invalid parameters.\n") 
             return 0
         self.myBoard = CtD.Board(self.w, self.h, self.nb_cond, self.fw, self.fh)
-        self.refresh_all('')
+        self.refresh_all('Let the game begin.\n')
     
     def load_game(self,file):
         # give to the controller all the characteristics to reconstitute a game
-        f = open(file,'rb')
         try:
-            [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, self.level, x, y, l_cond] = pickle.load(f)
+            # This format is better than for an actual application
             self.start()
-            self.myBoard.fugitive.x = x
-            self.myBoard.fugitive.y = y
-            self.myBoard.l_cond = l_cond
-            self.refresh_all("")
+            
+            f = open(file,'rb')
+            [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, 
+             self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y, self.myBoard.l_cond] = pickle.load(f)
+            
+            self.refresh_all("Game loaded\n")
+            f.close()
         except:
-            pass
-        f.close()
+            try:
+                # text format makes testing easier
+                f = open(file,'r')
+                params = [f.readline().split()[1]]
+                for i in range(8):
+                    params.append(int(f.readline().split()[1]))
+                [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, 
+                 self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y] = params
+                self.myBoard.l_cond = []
+                for i in range(self.nb_cond):
+                    cell = f.readline().split()
+                    self.myBoard.l_cond.append((int(cell[0]),int(cell[1])))
+        
+            
+                self.refresh_all("Game loaded\n")
+                f.close()
+            except:
+                self.refresh_all('Game could not be loaded. New game has been loaded instead.\n')
     
     def save_game(self, file):
         # save in a file all the characteristics to reconstitute a game
         try:
+            nb_cond = len(self.myBoard.l_cond)
+            
+            # This format is better than for an actual application
             f = open(file[0],'wb')
-            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond,self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y,self.myBoard.l_cond]
+            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, nb_cond,
+                      self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y, self.myBoard.l_cond]
             pickle.dump(params,f,pickle.HIGHEST_PROTOCOL)
             f.close()
+            
+            # text format makes testing easier
+            f = open('{}.txt'.format(file[0]),'w')
+            param_names = ["mode", "best_score", "nb_turns", 'width', 'heigth', 
+                           'nb_condemned_cells', 'level', 'fugitive_x_position', 
+                           'fugitive_y_position']
+            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, 
+                      nb_cond, self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y]
+            
+            for i, param in enumerate(params):
+                f.write('{}: {}\n'.format(param_names[i], param))
+            for l_cond in self.myBoard.l_cond:
+                f.write('{} {}\n'.format(l_cond[0], l_cond[1]))
+            f.close()
+            self.refresh_all("The game has been saved")
         except:
-            print('Game could not be saved')
-        f = open('{}.txt'.format(file[0]),'w')
-        param_names = ["mode", "best_score", "nb_turns", 'width', 'heigth', 'nb_condemned_cells', 'level', 'fugitive_x_position', 'fugitive_y_position']
-        params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y]
-        params = list(map(str, params))
-        for i, param in enumerate(params):
-            f.write('{}: {}\n'.format(param_names[i], param))
-        f.writelines(list(map(str, self.myBoard.l_cond)))
-        f.close()
+            self.refresh_all('Game could not be saved\n')
+            
+        
     
     def choose_level(self, level: int):
         # process level chosen
@@ -94,4 +125,4 @@ class CtDController(BaseController):
         else: #self.level == 2
             self.state = self.myBoard.fugitive.move_hard(self.myBoard)
         self.refresh_all('')
-        print(self.level,self.state)
+        # print(self.level,self.state)
