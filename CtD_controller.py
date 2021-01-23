@@ -68,8 +68,10 @@ class CtDController(BaseController):
                     cell = f.readline().split()
                     self.myBoard.l_cond.append((int(cell[0]),int(cell[1])))
         
-            
-                self.refresh_all("Game loaded\n")
+                if self.myBoard.fugitive.x<self.w and self.myBoard.fugitive.y<self.h:
+                    self.refresh_all("Game loaded.\n")
+                else:
+                    self.refresh_all("The file submitted is invalid. We advise you to delete it.")
                 f.close()
             except:
                 self.refresh_all('Game could not be loaded. New game has been loaded instead.\n')
@@ -125,4 +127,4 @@ class CtDController(BaseController):
         else: #self.level == 2
             self.state = self.myBoard.fugitive.move_hard(self.myBoard)
         self.refresh_all('')
-        # print(self.level,self.state)
+        print("Fugitive level",self.level,"in state",self.state)

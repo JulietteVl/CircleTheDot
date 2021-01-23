@@ -19,6 +19,7 @@ class Scene(QGraphicsScene):
         super().__init__(parent)
         self.controller = controller
         self.controller.add_client(self)
+        self.parent = parent
         self.l = 512;
         self.setSceneRect(0,0,self.l,self.l)
         
@@ -58,8 +59,9 @@ class Scene(QGraphicsScene):
         i = fugitive.x
         j = fugitive.y
         space = 2
-        fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
-        fugitiveGraphic.setPos(cells[j*w+i].pos())
+        if i<w and j<h:
+            fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
+            fugitiveGraphic.setPos(cells[j*w+i].pos())
         
         temp = self.controller.state.split()
         # print(temp)
@@ -151,7 +153,7 @@ class Params(QWidget):
         self.gridWidth_box.setValue(11)
         self.gridHeight_box.setValue(12)
         self.gridInit_boxes.setValue(6)
-        self.level_box.addItems(['1','2','3'])
+        self.level_box.addItems(['1 (blind)','2','3'])
         self.log_box.clear()
         self.log_box.append("Welcome to Circle the dot!\n")
         
@@ -210,7 +212,8 @@ class Params(QWidget):
             self.log_box.append("Game could not be saved. Please create a game.\n")
     
     def change_level(self):
-        self.controller.choose_level(int(self.level_box.currentText())-1)
+        print("Level changed to", int(self.level_box.currentIndex())+1)
+        self.controller.choose_level(int(self.level_box.currentIndex()))
     
     def refresh(self):
         self.gridWidth_box.setValue(self.controller.w)

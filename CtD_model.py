@@ -40,6 +40,7 @@ class Fugitive:
     def move_moy(self, board):
         # The fugitive makes a significant number of random guesses, 
         # saves the not to long ones and make the first step of the shortest.
+        print("Debugging squad")
         paths = []
         current_path = []
         
