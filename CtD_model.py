@@ -40,16 +40,14 @@ class Fugitive:
     def move_moy(self, board):
         # The fugitive makes a significant number of random guesses, 
         # saves the not to long ones and make the first step of the shortest.
-        print("Debugging squad")
         paths = []
-        current_path = []
         
         for p in range(250):
             state = "escaping"
-            current_path.clear()
+            current_path = []
             cx = self.x
             cy = self.y
-            while state == "escaping" and len(current_path) < 2*sqrt(board.h*board.w):
+            while state == "escaping" and len(current_path) < 2*sqrt(board.height*board.width):
                 choices = self.get_choices(board, cx,cy)
                 for c in choices.copy():
                     if (c in current_path):
@@ -66,9 +64,10 @@ class Fugitive:
                     cy = pos[1]
                     cp = cx,cy
                     current_path.append(cp)
+                    
             if state == "free":                
                 paths.append(current_path)
-        
+                
         if not paths:
             return(self.move(board))
         else:
