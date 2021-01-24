@@ -114,7 +114,7 @@ class Fugitive:
         
     
     def __repr__(self):
-        return f"The fugitive is at (x={self.x:2d} ; y={self.y:2d})"
+        return f"The fugitive is at (x={self.x:2d}; y={self.y:2d})"
     
     
 
@@ -141,6 +141,9 @@ class Board:
         for l in range(nb_cond):
             self.l_cond.append(random.choice(choices))
             choices.remove(self.l_cond[l])
+            
+    def __repr__(self):
+        return(f"Width {self.width}\nHeight {self.height}\nCondemned cells {self.l_cond}")
         
     def cond(self,x,y):
         pos = x,y
@@ -148,3 +151,8 @@ class Board:
             self.l_cond.append(pos)
             return 1
         return 0
+
+if __name__ == "__main__":
+    myBoard = Board(10,5,6,3,3)
+    print(myBoard)
+    print(myBoard.fugitive)

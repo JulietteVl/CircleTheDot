@@ -32,6 +32,12 @@ class CtDController(BaseController):
         self.fh = 3
         self.state = 'escaping' #
         self.level = 0
+        
+    def __repr__(self):
+        try:
+            return(f"Mode {self.mode}\nLevel {self.level}\n\tBoard:\n{self.myBoard}\n{self.myBoard.fugitive}")
+        except:
+            return(f"Mode {self.mode}\nWidth {self.w}\nHeight {self.h}\nLevel {self.level}\n")
     
     def start(self):
         # create an instance of board, which contains an instance of the fugitive
@@ -128,3 +134,27 @@ class CtDController(BaseController):
             self.state = self.myBoard.fugitive.move_hard(self.myBoard)
         self.refresh_all('')
         print("Fugitive level",self.level,self.state)
+
+
+if __name__ == "__main__":
+    myController = CtDController()
+    print(myController)
+    myController.start()
+    print(myController)
+    
+    myController.load_game("test")
+    print(myController)
+    
+    myController.choose_level(2)
+    myController.condemn(1,2)
+    myController.next()
+    print(myController)
+    
+    file = 'C:/Users/julie/OneDrive/Desktop/IOGS/3A/PAI/CircleTheDot/test_interne', 'All Files(*)'
+    myController.save_game(file)
+    f = open("test_interne.txt",'r')
+    lines = f.readlines()
+    for line in lines:
+        print(line)
+    f.close()
+    
