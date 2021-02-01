@@ -33,9 +33,8 @@ class Scene(QGraphicsScene):
         self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
         
         # Cells
-        board = self.controller.myBoard
-        w = board.width
-        h = board.height
+        w = self.controller.w
+        h = self.controller.h
         self.cellSpace = self.l//(max(w,h)+1)
         self.cellSize = self.cellSpace - 5
         self.border = (self.l-self.cellSpace*(max(w,h)))//2
@@ -46,7 +45,7 @@ class Scene(QGraphicsScene):
                  cells[j*w+i].setPos(self.border+i*self.cellSpace,self.border+(2*j+i%2)*(self.cellSpace//2))
         
         # Condemned cells
-        l_cond = board.l_cond
+        l_cond = self.controller.myBoard.l_cond
         cond_cells = [] # I'd rather simply repaint the cells but I don't know how to.
         for l,pos in enumerate(l_cond):
             i = pos[0]
@@ -55,7 +54,7 @@ class Scene(QGraphicsScene):
             cond_cells[l].setPos(cells[j*w+i].scenePos())
         
         # fugitive
-        fugitive = board.fugitive
+        fugitive = self.controller.myBoard.fugitive
         i = fugitive.x
         j = fugitive.y
         space = 2
@@ -87,7 +86,7 @@ class Scene(QGraphicsScene):
         pen = QPen(Qt.black)
         brush = QBrush(Qt.gray)
         self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
-        font = QFont('Arial',24,QFont.Bold)
+        font = QFont('Arial',19,QFont.Bold)
         self.gwTxt = self.addText('CONGRATULATIONS, YOU WON !',font)
         self.gwTxt.setDefaultTextColor(Qt.black)
         self.gwTxt.setPos(0,4*self.l/10)
@@ -197,12 +196,12 @@ class Params(QWidget):
             name=os.path.basename(fileName)
             self.searchPath_button.setText(name)
         except:
-            log_box.append('There was an error with the file submitted')
+            self.log_box.append('There was an error with the file submitted')
             return(0)
-#        try:
-        self.controller.load_game(fileName)
-#        except:
-#            print("the file submitted does not have the expected layout")
+        try:
+            self.controller.load_game(fileName)
+        except:
+            self.log_box.append("the file submitted does not have the expected layout")
     
     def on_save(self):
         try:

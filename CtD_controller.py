@@ -65,12 +65,12 @@ class CtDController(BaseController):
                 # text format makes testing easier
                 f = open(file,'r')
                 params = [f.readline().split()[1]]
-                for i in range(8):
+                for i in range(9):
                     params.append(int(f.readline().split()[1]))
                 [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, 
-                 self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y] = params
+                 nb_cond, self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y] = params
                 self.myBoard.l_cond = []
-                for i in range(self.nb_cond):
+                for i in range(nb_cond):
                     cell = f.readline().split()
                     self.myBoard.l_cond.append((int(cell[0]),int(cell[1])))
         
@@ -85,22 +85,23 @@ class CtDController(BaseController):
     def save_game(self, file):
         # save in a file all the characteristics to reconstitute a game
         try:
-            nb_cond = len(self.myBoard.l_cond)
-            
             # This format is better than for an actual application
             f = open(file[0],'wb')
-            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, nb_cond,
+            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond,
                       self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y, self.myBoard.l_cond]
             pickle.dump(params,f,pickle.HIGHEST_PROTOCOL)
             f.close()
             
             # text format makes testing easier
+            actual_nb_cond = len(self.myBoard.l_cond)
+            
             f = open('{}.txt'.format(file[0]),'w')
             param_names = ["mode", "best_score", "nb_turns", 'width', 'heigth', 
-                           'nb_condemned_cells', 'level', 'fugitive_x_position', 
-                           'fugitive_y_position']
+                           'initial_nb_condemned_cells', 'actual_nb_condemned_cells', 
+                           'level', 'fugitive_x_position', 'fugitive_y_position']
             params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, 
-                      nb_cond, self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y]
+                      self.nb_cond, actual_nb_cond, self.level, self.myBoard.fugitive.x, 
+                      self.myBoard.fugitive.y]
             
             for i, param in enumerate(params):
                 f.write('{}: {}\n'.format(param_names[i], param))
