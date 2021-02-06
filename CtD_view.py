@@ -23,6 +23,12 @@ class Scene(QGraphicsScene):
         self.l = 512;
         self.setSceneRect(0,0,self.l,self.l)
         
+        try:
+            from tinydb import TinyDB, Query
+            self.tinyInitialized = 1
+        except:
+            self.tinyInitialized = 0
+        
     def refresh(self):
         ## Scene
         
@@ -66,10 +72,16 @@ class Scene(QGraphicsScene):
         # print(temp)
         
         if temp[0] == 'stuck':
-             self.game_win()
+            if not self.tinyInitialized:
+                best = False
+            elif self.controller.best_score is None:
+                best = True
+            else:
+                best = self.controller.nbTurns<self.controller.best_score
+            self.game_win(best)
         
         elif temp[0] == 'free':
-             self.game_over()
+            self.game_over()
         
     def mousePressEvent(self, e):
         x = e.scenePos().x()
@@ -81,15 +93,21 @@ class Scene(QGraphicsScene):
         except:
             pass
         
-    def game_win(self):
+    def game_win(self,best):
         self.clear()
         pen = QPen(Qt.black)
         brush = QBrush(Qt.gray)
         self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
-        font = QFont('Arial',19,QFont.Bold)
-        self.gwTxt = self.addText('CONGRATULATIONS, YOU WON !',font)
-        self.gwTxt.setDefaultTextColor(Qt.black)
-        self.gwTxt.setPos(0,4*self.l/10)
+        font = QFont('Arial',24,QFont.Bold)
+        if best:
+            self.gbTxt = self.addText('BEST SCORE !',font)
+            self.gbTxt.setDefaultTextColor(Qt.black)
+            self.gbTxt.setPos(6*self.l/20,9*self.l/20)
+            self.controller.save_score()
+        else:
+            self.gwTxt = self.addText('YOU WON !',font)
+            self.gwTxt.setDefaultTextColor(Qt.black)
+            self.gwTxt.setPos(7*self.l/20,9*self.l/20)
         
         
     def game_over(self):
@@ -122,8 +140,6 @@ class message_box(QTextEdit):
         self.controller = controller
         self.controller.add_client(self)
         self.setReadOnly(True)
-        # self.setMaximumWidth(440)
-        # self.setMaximumHeight(200)
 
     def refresh(self):
         message = self.controller.message
@@ -144,8 +160,9 @@ class Params(QWidget):
         self.level_box = QComboBox()
         self.searchPath_button = QPushButton("Browse")
         self.save_button = QPushButton("Save game")
-        # Message box
-        self.log_box = message_box(self.controller)
+        self.b_score_lay = QLabel('Best score : '+str(self.controller.best_score))
+        self.score_lay = QLabel('Moves : '+str(self.controller.nbTurns))
+        self.log_box = message_box(self.controller) # Message box
         
         
         # Default value
@@ -178,6 +195,8 @@ class Params(QWidget):
         vLayout.addLayout(self.formLayout2)
         vLayout.addWidget(self.save_button)
         vLayout.addStretch()
+        vLayout.addWidget(self.b_score_lay)
+        vLayout.addWidget(self.score_lay)
         vLayout.addWidget(self.log_box)
         
         self.setLayout(vLayout)
@@ -219,6 +238,8 @@ class Params(QWidget):
         self.gridHeight_box.setValue(self.controller.h)
         self.gridInit_boxes.setValue(self.controller.nb_cond)
         self.level_box.setCurrentIndex(self.controller.level)
+        self.b_score_lay.setText('Best score : ' + str(self.controller.best_score))
+        self.score_lay.setText('Moves : ' + str(self.controller.nbTurns))
     
 class Widget(QWidget):
     def __init__(self, parent, controller):

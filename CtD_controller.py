@@ -4,7 +4,10 @@ import CtD_model as CtD
 import pickle
 from math import floor
 from numpy import sqrt
-#import random
+try:
+    from tinydb import TinyDB, Query
+except:
+    print("To enable all functionalities, please download tinydb: pip install tinydb")
 
 class BaseController:
     def __init__(self):
@@ -23,8 +26,8 @@ class CtDController(BaseController):
     def __init__(self):
         super().__init__()
         self.mode = 'chaser'
-        self.best_score = 0
-        self.nbTurns = 0
+        self.best_score = None
+        self.nbTurns = None
         self.w = 11
         self.h = 12
         self.nb_cond = 6
@@ -42,10 +45,12 @@ class CtDController(BaseController):
     def start(self):
         # create an instance of board, which contains an instance of the fugitive
         self.state = 'escaping'
+        self.nbTurns = 0
         if self.nb_cond+1>self.w*self.h:
             self.refresh_all("Invalid parameters.\n") 
             return 0
         self.myBoard = CtD.Board(self.w, self.h, self.nb_cond, self.fw, self.fh)
+        self.read_best()
         self.refresh_all('Let the game begin.\n')
     
     def load_game(self,file):
@@ -112,7 +117,31 @@ class CtDController(BaseController):
         except:
             self.refresh_all('Game could not be saved\n')
             
-        
+    def save_score(self):
+        # save the best score obtained during the game
+        try :
+            db_score = TinyDB('save_score.json')
+            query = Query()
+            info = [self.h,self.w,self.level,self.nb_cond]
+            db_score.upsert({"params":info,"score":self.nbTurns},query.params == info)
+        except :
+            pass
+
+
+    def read_best(self):
+        try :
+            db_score = TinyDB('save_score.json')
+            query = Query()
+            info = [self.h,self.w,self.level,self.nb_cond]
+            d = db_score.get(query.params == info)
+            if d is None :
+                self.best_score = None
+                self.refresh_all('There is no best score for this configuration.')
+            else :
+                self.best_score = d['score']
+                self.refresh_all(f'Best score for these parameters is {self.best_score}.')
+        except :
+            self.refresh_all('Best score could not be read')
     
     def choose_level(self, level: int):
         # process level chosen
@@ -125,8 +154,12 @@ class CtDController(BaseController):
             self.next()
     
     def next(self):
-        # Move the fugitive. The strategy depend on the level of the game.
-        #wait(0.5)
+        # Move the fugitive. The strategy depend on the level of the game
+        #wait(0.5)        
+        if self.nbTurns is None :
+            self.nbTurns = 1
+        else : 
+            self.nbTurns += 1
         if self.level == 0:
             self.state = self.myBoard.fugitive.move(self.myBoard)
         elif self.level == 1:
@@ -134,7 +167,8 @@ class CtDController(BaseController):
         else: #self.level == 2
             self.state = self.myBoard.fugitive.move_hard(self.myBoard)
         self.refresh_all('')
-        print("Fugitive level",self.level,self.state)
+        # print("Fugitive level",self.level,self.state)
+        
 
 
 if __name__ == "__main__":
