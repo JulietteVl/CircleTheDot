@@ -38,8 +38,8 @@ class Fugitive:
         return("escaping 0")
     
     def move_moy(self, board):
-        # The fugitive makes a significant number of random guesses, 
-        # saves the not to long ones and make the first step of the shortest.
+        # The fugitive makes  random guesses, saves the not too long ones 
+        # and make the first step of the shortest.
         paths = []
         
         for p in range(board.height*board.width//10):
@@ -98,17 +98,17 @@ class Fugitive:
                     if (c in p):
                         choices.remove(c)
                 paths.remove(p)
-                if choices:
+                if choices: #  is there anywhere we can go from this cell?
                     for c in choices:
-                        if (c[0]<0) or (c[1]<0) or (c[0]>=board.width) or (c[1]>=board.height):
+                        if (c[0]<0) or (c[1]<0) or (c[0]>=board.width) or (c[1]>=board.height): # leave if you can
                             state = "free"
                             self.x,self.y = p[1]
                             return("escaping 2")
-                        else:
+                        else: # grow the paths
                             p.append(c)
                             paths.append(p.copy())
                             p.remove(c)
-                elif paths == []:
+                elif paths == []: # give up
                     return(self.move(board))
         return("escaping 2")                      
         
@@ -143,9 +143,11 @@ class Board:
             choices.remove(self.l_cond[l])
             
     def __repr__(self):
+        # Characteristics of the board to be displayed
         return(f"Width {self.width}\nHeight {self.height}\nCondemned cells {self.l_cond}")
         
     def cond(self,x,y):
+        # Condemn a cell
         pos = x,y
         if (pos not in self.l_cond) and (pos != (self.fugitive.x, self.fugitive.y)):
             self.l_cond.append(pos)

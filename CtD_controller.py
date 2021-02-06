@@ -129,6 +129,7 @@ class CtDController(BaseController):
 
 
     def read_best(self):
+        # read the best score in file
         try :
             db_score = TinyDB('save_score.json')
             query = Query()
@@ -170,7 +171,7 @@ class CtDController(BaseController):
         print("Fugitive level",self.level,self.state)
         
 
-
+# test the main functionnalities
 if __name__ == "__main__":
     myController = CtDController()
     print(myController)
