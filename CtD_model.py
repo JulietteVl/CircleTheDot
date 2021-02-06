@@ -42,7 +42,7 @@ class Fugitive:
         # saves the not to long ones and make the first step of the shortest.
         paths = []
         
-        for p in range(250):
+        for p in range(board.height*board.width//10):
             state = "escaping"
             current_path = []
             cx = self.x
@@ -97,10 +97,8 @@ class Fugitive:
                 for c in choices.copy():
                     if (c in p):
                         choices.remove(c)
-                if not choices:
-                    return(self.move(board))
-                else:
-                    paths.remove(p)
+                paths.remove(p)
+                if choices:
                     for c in choices:
                         if (c[0]<0) or (c[1]<0) or (c[0]>=board.width) or (c[1]>=board.height):
                             state = "free"
@@ -110,6 +108,8 @@ class Fugitive:
                             p.append(c)
                             paths.append(p.copy())
                             p.remove(c)
+                elif paths == []:
+                    return(self.move(board))
         return("escaping 2")                      
         
     

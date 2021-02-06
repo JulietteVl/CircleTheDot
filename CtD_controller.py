@@ -167,7 +167,7 @@ class CtDController(BaseController):
         else: #self.level == 2
             self.state = self.myBoard.fugitive.move_hard(self.myBoard)
         self.refresh_all('')
-        # print("Fugitive level",self.level,self.state)
+        print("Fugitive level",self.level,self.state)
         
 
 
