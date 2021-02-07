@@ -1,4 +1,3 @@
-#import numpy as np
 from PyQt5.QtCore import *
 import CtD_model as CtD
 import pickle
@@ -43,7 +42,7 @@ class CtDController(BaseController):
             return(f"Mode {self.mode}\nWidth {self.w}\nHeight {self.h}\nLevel {self.level}\n")
     
     def start(self):
-        # create an instance of board, which contains an instance of the fugitive
+        # Create an instance of board, which contains an instance of the fugitive.
         self.state = 'escaping'
         self.nbTurns = 0
         if self.nb_cond+1>self.w*self.h:
@@ -186,11 +185,11 @@ if __name__ == "__main__":
     myController.next()
     print(myController)
     
-    file = 'C:/Users/julie/OneDrive/Desktop/IOGS/3A/PAI/CircleTheDot/test_interne', 'All Files(*)'
-    myController.save_game(file)
-    f = open("test_interne.txt",'r')
-    lines = f.readlines()
-    for line in lines:
-        print(line)
-    f.close()
+    # file = 'C:/Users/test_interne', 'All Files(*)'
+    # myController.save_game(file)
+    # f = open("test_interne.txt",'r')
+    # lines = f.readlines()
+    # for line in lines:
+    #     print(line)
+    # f.close()
     

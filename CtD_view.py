@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 20 14:08:06 2020
-
-@author: julie
-"""
-
 import os,sys
 
 from PyQt5.QtCore import *
@@ -23,6 +16,7 @@ class Scene(QGraphicsScene):
         self.l = 512;
         self.setSceneRect(0,0,self.l,self.l)
         
+        # See if packages can be imported to adapt behavior:
         try:
             from tinydb import TinyDB, Query
             self.tinyInitialized = 1
@@ -52,7 +46,7 @@ class Scene(QGraphicsScene):
         
         # Condemned cells
         l_cond = self.controller.myBoard.l_cond
-        cond_cells = [] # I'd rather simply repaint the cells but I don't know how to.
+        cond_cells = []
         for l,pos in enumerate(l_cond):
             i = pos[0]
             j = pos[1]
@@ -69,8 +63,8 @@ class Scene(QGraphicsScene):
             fugitiveGraphic.setPos(cells[j*w+i].pos())
         
         temp = self.controller.state.split()
-        # print(temp)
         
+        # Win
         if temp[0] == 'stuck':
             if not self.tinyInitialized:
                 best = False
@@ -80,16 +74,21 @@ class Scene(QGraphicsScene):
                 best = self.controller.nbTurns<self.controller.best_score
             self.game_win(best)
         
+        # Loose
         elif temp[0] == 'free':
             self.game_over()
         
     def mousePressEvent(self, e):
+        w = self.controller.w
+        h = self.controller.h
         x = e.scenePos().x()
         y = e.scenePos().y()
         try:
             i = int((x-self.border)/self.cellSpace)
-            j = int((y-self.border)/self.cellSpace-(i)%2/2)
-            self.controller.condemn(i,j)
+            j = int((y-self.border/2)/self.cellSpace-(i)%2/2) # Hexagonal stuff.
+            print(i,j,w,h)
+            if i>=0 and i<w and j >=0 and j<h:
+                self.controller.condemn(i,j)
         except:
             pass
         

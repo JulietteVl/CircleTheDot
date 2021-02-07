@@ -2,22 +2,24 @@ import random
 from math import sqrt
 
 class Fugitive:
-    def __init__(self,x:int,y:int): #,level:int
+    # This is incarnated by the red circle trying to escape the board.
+    def __init__(self,x:int,y:int):
         self.x = x
         self.y = y
     
     def get_choices(self, board, cx, cy):
-        # the 6 adjacent cases, excluding the condemned ones
+        # Give the coordinates of the 6 adjacent cases, excluding the condemned ones.
         choices = [(cx,cy+1),   #above
                    (cx,cy-1),   #below
                    (cx+1,cy),
                    (cx-1,cy)]
-        if cx%2 == 0:
+        if cx%2 == 0: # this dependency is due to the grid being hexagonal.
             choices.append((cx+1,cy-1))
             choices.append((cx-1,cy-1))
         else:
             choices.append((cx+1,cy+1))
             choices.append((cx-1,cy+1))
+            
         for c in choices.copy():
             if (c in board.l_cond):
                 choices.remove(c)
@@ -25,29 +27,28 @@ class Fugitive:
         return choices
     
     def move(self, board):
-        # random choice. The fugitive is blind.
+        # At the minimum level, the choice is random. The fugitive is blind.
         choices = self.get_choices(board, self.x,self.y)
         if len(choices) == 0:
-            return("stuck 0")
+            return("stuck 0") # 0 is the level.
         
         pos = random.choice(choices)
-        if (pos[0]<0) or (pos[1]<0) or (pos[0]>=board.width) or (pos[1]>=board.height):
-            return("free 0")
+        if (pos[0]<0) or (pos[1]<0) or (pos[0]>=board.width) or (pos[1]>=board.height): 
+            return("free 0") # condition for leaving the board is met
         self.x = pos[0]
         self.y = pos[1]
         return("escaping 0")
     
     def move_moy(self, board):
-        # The fugitive makes  random guesses, saves the not too long ones 
-        # and make the first step of the shortest.
+        # The fugitive makes several random guesses and make the first step of the shortest.
         paths = []
         
-        for p in range(board.height*board.width//10):
+        for p in range(board.height*board.width//10): # The number of guesses is arbitrary
             state = "escaping"
             current_path = []
             cx = self.x
             cy = self.y
-            while state == "escaping" and len(current_path) < 2*sqrt(board.height*board.width):
+            while state == "escaping" and len(current_path) < 2*sqrt(board.height*board.width): # The length is arbitrary.
                 choices = self.get_choices(board, cx,cy)
                 for c in choices.copy():
                     if (c in current_path):
@@ -98,17 +99,16 @@ class Fugitive:
                     if (c in p):
                         choices.remove(c)
                 paths.remove(p)
-                if choices: #  is there anywhere we can go from this cell?
+                if choices: #  Is there anywhere we can go from this cell?
                     for c in choices:
-                        if (c[0]<0) or (c[1]<0) or (c[0]>=board.width) or (c[1]>=board.height): # leave if you can
-                            state = "free"
+                        if (c[0]<0) or (c[1]<0) or (c[0]>=board.width) or (c[1]>=board.height):
                             self.x,self.y = p[1]
                             return("escaping 2")
                         else: # grow the paths
                             p.append(c)
                             paths.append(p.copy())
                             p.remove(c)
-                elif paths == []: # give up
+                elif paths == []: # No path lead to the exit. The fugitive choose a random cell.
                     return(self.move(board))
         return("escaping 2")                      
         
@@ -128,7 +128,7 @@ class Board:
         self.fuy_width = fw
         self.fuy_height = fh
         
-        # avoid being outside of the grid:
+        # Avoid being outside of the grid:
         self.fugitive = Fugitive((random.randint(max(int(self.width/2-self.fuy_width/2),0), 
                                                  min(int(self.width/2+self.fuy_width/2),self.width-1))),
                                  (random.randint(max(int(self.height/2-self.fuy_height/2),0),
@@ -143,17 +143,18 @@ class Board:
             choices.remove(self.l_cond[l])
             
     def __repr__(self):
-        # Characteristics of the board to be displayed
+        # Characteristics of the board to be displayed:
         return(f"Width {self.width}\nHeight {self.height}\nCondemned cells {self.l_cond}")
         
     def cond(self,x,y):
-        # Condemn a cell
+        # Condemn a cell.
         pos = x,y
         if (pos not in self.l_cond) and (pos != (self.fugitive.x, self.fugitive.y)):
             self.l_cond.append(pos)
             return 1
         return 0
 
+# Tests for some basic characteristics. More are tested in the controller.
 if __name__ == "__main__":
     myBoard = Board(10,5,6,3,3)
     print(myBoard)
