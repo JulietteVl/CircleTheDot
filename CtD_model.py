@@ -156,6 +156,19 @@ class Board:
 
 # Tests for some basic characteristics. More are tested in the controller.
 if __name__ == "__main__":
+    # test board conception
     myBoard = Board(10,5,6,3,3)
     print(myBoard)
-    print(myBoard.fugitive)
+    
+    myBoard.cond(0,0)
+    print(myBoard)
+    
+    # test that fugitive moves
+    myFugitive = myBoard.fugitive
+    print(myFugitive)
+    myFugitive.move(myBoard)
+    print(myFugitive)
+    myFugitive.move_moy(myBoard)
+    print(myFugitive)
+    myFugitive.move_hard(myBoard)
+    print(myFugitive)

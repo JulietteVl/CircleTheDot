@@ -184,7 +184,12 @@ if __name__ == "__main__":
     myController.next()
     print(myController)
     
-    # file = 'C:/Users/test_interne', 'All Files(*)'
+    # replace with appropriate path to test. if the file is not in the same 
+    # folder as the codes you need to change the line f = open(...) too
+    
+    # We recommend testing through the UI as it is easier.
+    
+    # file = 'C:/Users/julie/.../CircleTheDot/test_interne', 'All Files(*)'
     # myController.save_game(file)
     # f = open("test_interne.txt",'r')
     # lines = f.readlines()
