@@ -1,5 +1,4 @@
 mode: chaser
-best_score: 0
 nb_turns: 0
 width: 11
 heigth: 12

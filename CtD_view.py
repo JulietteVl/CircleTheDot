@@ -86,7 +86,6 @@ class Scene(QGraphicsScene):
         try:
             i = int((x-self.border)/self.cellSpace)
             j = int((y-self.border/2)/self.cellSpace-(i)%2/2) # Hexagonal stuff.
-            print(i,j,w,h)
             if i>=0 and i<w and j >=0 and j<h:
                 self.controller.condemn(i,j)
         except:

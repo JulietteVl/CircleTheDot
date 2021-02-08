@@ -59,8 +59,8 @@ class CtDController(BaseController):
             self.start()
             
             f = open(file,'rb')
-            [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, 
-             self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y, self.myBoard.l_cond] = pickle.load(f)
+            [self.mode, self.nbTurns, self.w, self.h, self.nb_cond, self.level, 
+             self.myBoard.fugitive.x, self.myBoard.fugitive.y, self.myBoard.l_cond] = pickle.load(f)
             
             self.refresh_all("Game loaded\n")
             f.close()
@@ -69,10 +69,10 @@ class CtDController(BaseController):
                 # text format makes testing easier
                 f = open(file,'r')
                 params = [f.readline().split()[1]]
-                for i in range(9):
+                for i in range(8):
                     params.append(int(f.readline().split()[1]))
-                [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond, 
-                 nb_cond, self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y] = params
+                [self.mode, self.nbTurns, self.w, self.h, self.nb_cond, nb_cond, 
+                 self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y] = params
                 self.myBoard.l_cond = []
                 for i in range(nb_cond):
                     cell = f.readline().split()
@@ -91,8 +91,8 @@ class CtDController(BaseController):
         try:
             # This format is better than for an actual application
             f = open(file[0],'wb')
-            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, self.nb_cond,
-                      self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y, self.myBoard.l_cond]
+            params = [self.mode, self.nbTurns, self.w, self.h, self.nb_cond, self.level, 
+                      self.myBoard.fugitive.x, self.myBoard.fugitive.y, self.myBoard.l_cond]
             pickle.dump(params,f,pickle.HIGHEST_PROTOCOL)
             f.close()
             
@@ -100,12 +100,11 @@ class CtDController(BaseController):
             actual_nb_cond = len(self.myBoard.l_cond)
             
             f = open('{}.txt'.format(file[0]),'w')
-            param_names = ["mode", "best_score", "nb_turns", 'width', 'heigth', 
-                           'initial_nb_condemned_cells', 'actual_nb_condemned_cells', 
-                           'level', 'fugitive_x_position', 'fugitive_y_position']
-            params = [self.mode, self.best_score, self.nbTurns, self.w, self.h, 
-                      self.nb_cond, actual_nb_cond, self.level, self.myBoard.fugitive.x, 
-                      self.myBoard.fugitive.y]
+            param_names = ["mode", "nb_turns", 'width', 'heigth','initial_nb_condemned_cells', 
+                           'actual_nb_condemned_cells','level', 'fugitive_x_position', 
+                           'fugitive_y_position']
+            params = [self.mode, self.nbTurns, self.w, self.h, self.nb_cond, actual_nb_cond, 
+                      self.level, self.myBoard.fugitive.x, self.myBoard.fugitive.y]
             
             for i, param in enumerate(params):
                 f.write('{}: {}\n'.format(param_names[i], param))
