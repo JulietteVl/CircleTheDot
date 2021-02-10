@@ -34,6 +34,7 @@ class CtDController(BaseController):
         self.fh = 3
         self.state = 'escaping' #
         self.level = 0
+        self.valid = 0
         
     def __repr__(self):
         try:
@@ -46,8 +47,10 @@ class CtDController(BaseController):
         self.state = 'escaping'
         self.nbTurns = 0
         if self.nb_cond+1>self.w*self.h:
-            self.refresh_all("Invalid parameters.\n") 
+            self.refresh_all("Invalid parameters.\n")
+            self.valid = 0
             return 0
+        self.valid = 1
         self.myBoard = CtD.Board(self.w, self.h, self.nb_cond, self.fw, self.fh)
         self.read_best()
         self.refresh_all('Let the game begin.\n')
@@ -64,6 +67,7 @@ class CtDController(BaseController):
             
             self.refresh_all("Game loaded\n")
             f.close()
+            self.valid = 1
         except:
             try:
                 # text format makes testing easier
@@ -83,8 +87,9 @@ class CtDController(BaseController):
                 else:
                     self.refresh_all("The file submitted is invalid. We advise you to delete it.")
                 f.close()
+                self.valid = 1
             except:
-                self.refresh_all('Game could not be loaded. New game has been loaded instead.\n')
+                self.valid = 0
     
     def save_game(self, file):
         # save in a file all the characteristics to reconstitute a game
@@ -176,13 +181,14 @@ if __name__ == "__main__":
     myController.start()
     print(myController)
     
-    myController.load_game("test")
-    print(myController)
-    
     myController.choose_level(2)
     myController.condemn(1,2)
     myController.next()
     print(myController)
+    
+    # you need an appropriate test file to run
+    # myController.load_game("test3-2")
+    # print(myController)
     
     # replace with appropriate path to test. if the file is not in the same 
     # folder as the codes you need to change the line f = open(...) too

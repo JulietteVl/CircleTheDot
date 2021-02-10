@@ -25,58 +25,61 @@ class Scene(QGraphicsScene):
         
     def refresh(self):
         ## Scene
-        
-        # Background
-        self.clear()
-        pen = QPen(Qt.black)
-        brush = QBrush(Qt.gray)
-        self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
-        
-        # Cells
-        w = self.controller.w
-        h = self.controller.h
-        self.cellSpace = self.l//(max(w,h)+1)
-        self.cellSize = self.cellSpace - 5
-        self.border = (self.l-self.cellSpace*(max(w,h)))//2
-        cells = []
-        for j in range(h):
-            for i in range(w):
-                 cells.append(self.addRect(0,0,self.cellSize,self.cellSize,pen,QBrush(Qt.white)))
-                 cells[j*w+i].setPos(self.border+i*self.cellSpace,self.border+(2*j+i%2)*(self.cellSpace//2))
-        
-        # Condemned cells
-        l_cond = self.controller.myBoard.l_cond
-        cond_cells = []
-        for l,pos in enumerate(l_cond):
-            i = pos[0]
-            j = pos[1]
-            cond_cells.append(self.addRect(0,0,self.cellSize,self.cellSize,pen,QBrush(Qt.red)))
-            cond_cells[l].setPos(cells[j*w+i].scenePos())
-        
-        # fugitive
-        fugitive = self.controller.myBoard.fugitive
-        i = fugitive.x
-        j = fugitive.y
-        space = 2
-        if i<w and j<h:
-            fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
-            fugitiveGraphic.setPos(cells[j*w+i].pos())
-        
-        temp = self.controller.state.split()
-        
-        # Win
-        if temp[0] == 'stuck':
-            if not self.tinyInitialized:
-                best = False
-            elif self.controller.best_score is None:
-                best = True
-            else:
-                best = self.controller.nbTurns<self.controller.best_score
-            self.game_win(best)
-        
-        # Loose
-        elif temp[0] == 'free':
-            self.game_over()
+        if self.controller.valid:
+            # Background
+            self.clear()
+            pen = QPen(Qt.black)
+            brush = QBrush(Qt.gray)
+            self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
+            
+            # Cells
+            w = self.controller.w
+            h = self.controller.h
+            self.cellSpace = self.l//(max(w,h)+1)
+            self.cellSize = self.cellSpace - 5
+            self.border = (self.l-self.cellSpace*(max(w,h)))//2
+            cells = []
+            for j in range(h):
+                for i in range(w):
+                     cells.append(self.addRect(0,0,self.cellSize,self.cellSize,pen,QBrush(Qt.white)))
+                     cells[j*w+i].setPos(self.border+i*self.cellSpace,self.border+(2*j+i%2)*(self.cellSpace//2))
+            
+            # Condemned cells
+            l_cond = self.controller.myBoard.l_cond
+            cond_cells = []
+            for l,pos in enumerate(l_cond):
+                i = pos[0]
+                j = pos[1]
+                cond_cells.append(self.addRect(0,0,self.cellSize,self.cellSize,pen,QBrush(Qt.red)))
+                cond_cells[l].setPos(cells[j*w+i].scenePos())
+            
+            # fugitive
+            fugitive = self.controller.myBoard.fugitive
+            i = fugitive.x
+            j = fugitive.y
+            space = 2
+            if i<w and j<h:
+                fugitiveGraphic = self.addEllipse(space,space,self.cellSize-2*space,self.cellSize-2*space,pen,QBrush(Qt.blue))
+                fugitiveGraphic.setPos(cells[j*w+i].pos())
+            
+            temp = self.controller.state.split()
+            
+            # Win
+            if temp[0] == 'stuck':
+                if not self.tinyInitialized:
+                    best = False
+                elif self.controller.best_score is None:
+                    best = True
+                else:
+                    best = self.controller.nbTurns<self.controller.best_score
+                self.game_win(best)
+            
+            # Loose
+            elif temp[0] == 'free':
+                self.game_over()
+                
+        else:
+            pass
         
     def mousePressEvent(self, e):
         w = self.controller.w
@@ -165,7 +168,9 @@ class Params(QWidget):
         
         # Default value
         self.gridWidth_box.setValue(11)
+        self.gridWidth_box.setMinimum(3)
         self.gridHeight_box.setValue(12)
+        self.gridHeight_box.setMinimum(3)
         self.gridInit_boxes.setValue(6)
         self.level_box.addItems(['1 (blind)','2','3'])
         self.log_box.clear()

@@ -129,10 +129,10 @@ class Board:
         self.fuy_height = fh
         
         # Avoid being outside of the grid:
-        self.fugitive = Fugitive((random.randint(max(int(self.width/2-self.fuy_width/2),0), 
-                                                 min(int(self.width/2+self.fuy_width/2),self.width-1))),
-                                 (random.randint(max(int(self.height/2-self.fuy_height/2),0),
-                                                 min(int(self.height/2+self.fuy_height/2),self.height-1))))
+        self.fugitive = Fugitive((random.randint(max(int(self.width/2-self.fuy_width/2),1), 
+                                                 min(int(self.width/2+self.fuy_width/2),self.width-2))),
+                                 (random.randint(max(int(self.height/2-self.fuy_height/2),1),
+                                                 min(int(self.height/2+self.fuy_height/2),self.height-2))))
         choices = []
         for i in range(self.width):
             for j in range(self.height):
