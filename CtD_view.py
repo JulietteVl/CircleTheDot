@@ -33,8 +33,8 @@ class Scene(QGraphicsScene):
             self.fond = self.addRect(0,0,self.l,self.l,pen,brush)
             
             # Cells
-            w = self.controller.w
-            h = self.controller.h
+            w = self.controller.myBoard.width
+            h = self.controller.myBoard.height
             self.cellSpace = self.l//(max(w,h)+1)
             self.cellSize = self.cellSpace - 5
             self.border = (self.l-self.cellSpace*(max(w,h)))//2

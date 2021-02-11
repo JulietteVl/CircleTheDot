@@ -158,10 +158,10 @@ class Board:
 if __name__ == "__main__":
     # test board conception
     myBoard = Board(10,5,6,3,3)
-    print(myBoard)
+    print(myBoard,"\n")
     
     myBoard.cond(0,0)
-    print(myBoard)
+    print(myBoard,"\n")
     
     # test that fugitive moves
     myFugitive = myBoard.fugitive

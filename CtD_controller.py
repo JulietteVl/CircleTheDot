@@ -47,12 +47,14 @@ class CtDController(BaseController):
         self.state = 'escaping'
         self.nbTurns = 0
         if self.nb_cond+1>self.w*self.h:
+            if not hasattr(self, 'myBoard'):
+                self.valid = 0
             self.refresh_all("Invalid parameters.\n")
-            self.valid = 0
             return 0
-        self.valid = 1
         self.myBoard = CtD.Board(self.w, self.h, self.nb_cond, self.fw, self.fh)
         self.read_best()
+
+        self.valid = 1
         self.refresh_all('Let the game begin.\n')
     
     def load_game(self,file):
@@ -67,7 +69,6 @@ class CtDController(BaseController):
             
             self.refresh_all("Game loaded\n")
             f.close()
-            self.valid = 1
         except:
             try:
                 # text format makes testing easier
@@ -82,14 +83,13 @@ class CtDController(BaseController):
                     cell = f.readline().split()
                     self.myBoard.l_cond.append((int(cell[0]),int(cell[1])))
         
-                if self.myBoard.fugitive.x<self.w and self.myBoard.fugitive.y<self.h:
+                if self.myBoard.fugitive.x<self.w and self.myBoard.fugitive.y<self.h and cell !=[]:
                     self.refresh_all("Game loaded.\n")
                 else:
-                    self.refresh_all("The file submitted is invalid. We advise you to delete it.")
+                    self.refresh_all("The file submitted is invalid. The game may not be the one expected.")
                 f.close()
-                self.valid = 1
             except:
-                self.valid = 0
+                self.refresh_all('The file submitted is invalid. The game may not be the one expected.\n')
     
     def save_game(self, file):
         # save in a file all the characteristics to reconstitute a game
@@ -177,14 +177,14 @@ class CtDController(BaseController):
 # test the main functionnalities
 if __name__ == "__main__":
     myController = CtDController()
-    print(myController)
+    print(myController,"\n")
     myController.start()
-    print(myController)
+    print(myController,"\n")
     
     myController.choose_level(2)
     myController.condemn(1,2)
     myController.next()
-    print(myController)
+    print(myController,"\n")
     
     # you need an appropriate test file to run
     # myController.load_game("test3-2")
@@ -195,7 +195,7 @@ if __name__ == "__main__":
     
     # We recommend testing through the UI as it is easier.
     
-    # file = 'C:/Users/julie/.../CircleTheDot/test_interne', 'All Files(*)'
+    # file = 'C:/Users/julie/OneDrive/Desktop/IOGS/3A/PAI/CircleTheDot/test_interne', 'All Files(*)'
     # myController.save_game(file)
     # f = open("test_interne.txt",'r')
     # lines = f.readlines()
