@@ -1,14 +1,41 @@
+"""
+The model manages the data, logic and rules of the application.
+
+Classes:
+    Fugitive
+    Board
+"""
+
 import random
 from math import sqrt
 
 
 class Fugitive:
-    # This is incarnated by the red circle trying to escape the board.
+    """Incarnated by the red circle trying to escape the board."""
+
     def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
 
-    def get_choices(self, board, cx, cy):
+    def get_choices(self, board, cx: int, cy: int):
+        """
+        Give the coordinates of cells that can be accessed by the fugitive.
+
+        Parameters
+        ----------
+        board : Board
+            The board used in the game
+        cx : int
+            Coordinate along the x (horizontal) axis
+        cy : int
+            Coordinate along the y (vertical) axis
+
+        Returns
+        -------
+        choices : array
+            array containing tuples of coordinates
+
+        """
         # Give the coordinates of the 6 adjacent cases, excluding the condemned
         # ones.
         choices = [(cx, cy+1),   # above
@@ -29,7 +56,7 @@ class Fugitive:
         return choices
 
     def move(self, board):
-        # At the minimum level, the choice is random. The fugitive is blind.
+        """Randomly change fugitive position."""
         choices = self.get_choices(board, self.x, self.y)
         if len(choices) == 0:
             return("stuck 0")   # 0 is the level.
@@ -47,8 +74,12 @@ class Fugitive:
         return("escaping 0")
 
     def move_moy(self, board):
-        # The fugitive makes several random guesses and make the first step of
-        # the shortest.
+        """
+        Change fugitive position.
+
+        The fugitive makes several random guesses and make the first step of
+        the shortest.
+        """
         paths = []
 
         for p in range(board.height*board.width//10):
@@ -102,8 +133,11 @@ class Fugitive:
             return("escaping 1")
 
     def move_hard(self, board):
-        # The fugitive considers all the possible path and make the first step
-        # to the shortest.
+        """Change fugitive position.
+
+        The fugitive considers all the possible path and make the first step
+        to the shortest.
+        """
         if (
                 (self.x < 1)
                 or (self.y < 1)
@@ -147,10 +181,13 @@ class Fugitive:
         return("escaping 2")
 
     def __repr__(self):
+        """Return representation of a fugitive object."""
         return f"The fugitive is at (x={self.x:2d}; y={self.y:2d})"
 
 
 class Board:
+    """Game board and its evolution."""
+
     def __init__(self, w, h, nb_cond, fw, fh):
         self.width = w
         self.height = h
@@ -177,11 +214,11 @@ class Board:
             choices.remove(self.l_cond[k])
 
     def __repr__(self):
-        # Characteristics of the board to be displayed:
+        """Return a representation of the board."""
         return(f"Width {self.width}\nHeight {self.height}\nCondemned cells {self.l_cond}")
 
     def cond(self, x, y):
-        # Condemn a cell.
+        """Condemn a cell."""
         pos = x, y
         if ((pos not in self.l_cond)
                 and (pos != (self.fugitive.x, self.fugitive.y))):

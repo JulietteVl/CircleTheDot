@@ -1,3 +1,20 @@
+"""
+The view manages the user interface.
+
+Classes:
+
+    Scene
+    View
+    Message box
+    Params
+    Widget
+    Window
+
+Function:
+
+    main
+"""
+
 import os
 
 from PyQt5.QtCore import *
@@ -8,6 +25,8 @@ from CtD_controller import *
 
 
 class Scene(QGraphicsScene):
+    """Represent the board and the fugitive."""
+
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
@@ -24,6 +43,7 @@ class Scene(QGraphicsScene):
             self.tinyInitialized = 0
 
     def refresh(self):
+        """Update the scene."""
         # Scene
         if self.controller.valid:
             # Background
@@ -92,6 +112,7 @@ class Scene(QGraphicsScene):
             pass
 
     def mousePressEvent(self, e):
+        """Send user click information to the controller."""
         w = self.controller.w
         h = self.controller.h
         x = e.scenePos().x()
@@ -105,6 +126,7 @@ class Scene(QGraphicsScene):
             pass
 
     def game_win(self, best):
+        """Display appropriate information when the player wins."""
         self.clear()
         pen = QPen(Qt.black)
         brush = QBrush(Qt.gray)
@@ -121,6 +143,7 @@ class Scene(QGraphicsScene):
             self.gwTxt.setPos(7*self.l/20, 9*self.l/20)
 
     def game_over(self):
+        """Display appropriate message when player looses."""
         self.clear()
         pen = QPen(Qt.black)
         brush = QBrush(Qt.gray)
@@ -132,6 +155,8 @@ class Scene(QGraphicsScene):
 
 
 class View(QGraphicsView):
+    """Control the window size."""
+
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
@@ -140,13 +165,17 @@ class View(QGraphicsView):
         self.setScene(self.scene)
 
     def resizeEvent(self, event):
+        """Resize the window."""
         self.fitInView(self.scene.sceneRect(), Qt.KeepAspectRatio)
 
     def refresh(self):
+        """Update the object."""
         pass
 
 
 class message_box(QTextEdit):
+    """Writable box."""
+
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
@@ -154,12 +183,15 @@ class message_box(QTextEdit):
         self.setReadOnly(True)
 
     def refresh(self):
+        """Update the object."""
         message = self.controller.message
         if message:
             self.append(message)
 
 
 class Params(QWidget):
+    """Manages the layout of the parameters (everything but the board)."""
+
     def __init__(self, parent, controller):
         super().__init__()
         self.controller = controller
@@ -216,12 +248,14 @@ class Params(QWidget):
         self.setLayout(vLayout)
 
     def on_start(self):
+        """Initialise parameters"""
         self.controller.w = self.gridWidth_box.value()
         self.controller.h = self.gridHeight_box.value()
         self.controller.nb_cond = self.gridInit_boxes.value()
         self.controller.start()
 
     def on_load(self):
+        """Update parameters when loading a game."""
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(
@@ -241,6 +275,7 @@ class Params(QWidget):
                 "the file submitted does not have the expected layout")
 
     def on_save(self):
+        """Trigger parameters' backup."""
         try:
             fileName = QFileDialog.getSaveFileName(self, "Select checkpoint",
                                                    "", "All Files(*)")
@@ -250,10 +285,12 @@ class Params(QWidget):
                 "Game could not be saved. Please create a game.\n")
 
     def change_level(self):
+        """Trigger level change."""
         print("Level changed to", int(self.level_box.currentIndex())+1)
         self.controller.choose_level(int(self.level_box.currentIndex()))
 
     def refresh(self):
+        """Update object."""
         self.gridWidth_box.setValue(self.controller.w)
         self.gridHeight_box.setValue(self.controller.h)
         self.gridInit_boxes.setValue(self.controller.nb_cond)
@@ -263,6 +300,8 @@ class Params(QWidget):
 
 
 class Widget(QWidget):
+    """Manages the layout of the objects defined in previous classes."""
+
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
@@ -275,10 +314,13 @@ class Widget(QWidget):
         self.setLayout(layout)
 
     def refresh(self):
+        """Update object."""
         pass
 
 
 class Window(QMainWindow):
+    """Main window: Widget plus title."""
+
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
@@ -288,10 +330,12 @@ class Window(QMainWindow):
         self.setCentralWidget(mainwidget)
 
     def refresh(self):
+        """Update object."""
         pass
 
 
 def main():
+    """Instanciate necessary classes and display application."""
     app = QApplication([])
     controller = CtDController()
     win = Window(controller)

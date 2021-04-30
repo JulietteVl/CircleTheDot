@@ -1,3 +1,12 @@
+"""
+The controller connects the model and the view.
+
+Classes:
+
+    BaseController
+    CtDController
+"""
+
 from PyQt5.QtCore import *
 import CtD_model as CtD
 import pickle
@@ -10,20 +19,26 @@ except Exception:
 
 
 class BaseController:
+    """Traditionnal functionalities of a controller."""
+
     def __init__(self):
         self.clients = list()
         self.message = ""
 
     def add_client(self, client):
+        """Add client to the list of elements the controller will manage."""
         self.clients.append(client)
 
     def refresh_all(self, message):
+        """Update all known elements."""
         self.message = message
         for client in self.clients:
             client.refresh()
 
 
 class CtDController(BaseController):
+    """Parameters and methods to manage the sequence of events."""
+
     def __init__(self):
         super().__init__()
         self.mode = 'chaser'
@@ -39,13 +54,15 @@ class CtDController(BaseController):
         self.valid = 0
 
     def __repr__(self):
+        """Return representation of objects."""
         try:
             return(f"Mode {self.mode}\nLevel {self.level}\n\tBoard:\n{self.myBoard}\n{self.myBoard.fugitive}")
-        except:
+        except Exception:
             return(f"Mode {self.mode}\nWidth {self.w}\nHeight {self.h}\nLevel {self.level}\n")
 
     def start(self):
-        # Create an instance of board, which contains an instance of the 
+        """Initialise the game."""
+        # Create an instance of board, which contains an instance of the
         # fugitive.
         self.state = 'escaping'
         self.nbTurns = 0
@@ -62,7 +79,7 @@ class CtDController(BaseController):
         self.refresh_all('Let the game begin.\n')
 
     def load_game(self, file):
-        # give to the controller all the characteristics to reconstitute a game
+        """Load all the characteristics to reconstitute a game."""
         try:
             # This format is better than for an actual application
             self.start()
@@ -102,7 +119,7 @@ class CtDController(BaseController):
                 self.refresh_all('The file submitted is invalid. The game may not be the one expected.\n')
 
     def save_game(self, file):
-        # save in a file all the characteristics to reconstitute a game
+        """Save in a file all the characteristics to reconstitute a game."""
         try:
             # This format is better than for an actual application
             f = open(file[0], 'wb')
@@ -135,7 +152,7 @@ class CtDController(BaseController):
             self.refresh_all('Game could not be saved\n')
 
     def save_score(self):
-        # save the best score obtained during the game
+        """Save the best score obtained during the game."""
         try:
             db_score = TinyDB('save_score.json')
             query = Query()
@@ -146,7 +163,7 @@ class CtDController(BaseController):
             pass
 
     def read_best(self):
-        # read the best score in file
+        """Read the best score in file."""
         try:
             db_score = TinyDB('save_score.json')
             query = Query()
@@ -164,17 +181,17 @@ class CtDController(BaseController):
             self.refresh_all('Best score could not be read')
 
     def choose_level(self, level: int):
-        # process level chosen
+        """Process level chosen."""
         self.level = level
 
     def condemn(self, i, j):
-        # mark a case (i,j) as condemned
+        """Mark a case (i,j) as condemned."""
         condemned = self.myBoard.cond(i, j)
         if condemned:
             self.next()
 
     def next(self):
-        # Move the fugitive. The strategy depend on the level of the game
+        """Move the fugitive. The strategy depend on the level of the game."""
         if self.nbTurns is None:
             self.nbTurns = 1
         else:
