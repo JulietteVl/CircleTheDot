@@ -66,7 +66,7 @@ class CtDController(BaseController):
         # fugitive.
         self.state = 'escaping'
         self.nbTurns = 0
-        if self.nb_cond+1 > self.w*self.h:
+        if self.nb_cond + 1 > self.w * self.h:
             if not hasattr(self, 'myBoard'):
                 self.valid = 0
             self.refresh_all("Invalid parameters.\n")

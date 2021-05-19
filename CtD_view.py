@@ -55,18 +55,18 @@ class Scene(QGraphicsScene):
             # Cells
             w = self.controller.myBoard.width
             h = self.controller.myBoard.height
-            self.cellSpace = self.l//(max(w, h)+1)
+            self.cellSpace = self.l // (max(w, h) + 1)
             self.cellSize = self.cellSpace - 5
-            self.border = (self.l-self.cellSpace*(max(w, h)))//2
+            self.border = (self.l - self.cellSpace * (max(w, h))) // 2
             cells = []
             for j in range(h):
                 for i in range(w):
                     cells.append(
                         self.addRect(0, 0, self.cellSize, self.cellSize, pen,
                                      QBrush(Qt.white)))
-                    cells[j*w+i].setPos(
-                        self.border+i*self.cellSpace,
-                        self.border+(2*j+i % 2)*(self.cellSpace//2)
+                    cells[j * w + i].setPos(
+                        self.border + i * self.cellSpace,
+                        self.border + (2 * j + i % 2) * (self.cellSpace // 2)
                         )
 
             # Condemned cells
@@ -79,7 +79,7 @@ class Scene(QGraphicsScene):
                     self.addRect(0, 0, self.cellSize, self.cellSize,
                                  pen, QBrush(Qt.red))
                     )
-                cond_cells[k].setPos(cells[j*w+i].scenePos())
+                cond_cells[k].setPos(cells[j * w + i].scenePos())
 
             # fugitive
             fugitive = self.controller.myBoard.fugitive
@@ -88,9 +88,9 @@ class Scene(QGraphicsScene):
             space = 2
             if i < w and j < h:
                 fugitiveGraphic = self.addEllipse(
-                    space, space, self.cellSize-2*space, self.cellSize-2*space,
-                    pen, QBrush(Qt.blue))
-                fugitiveGraphic.setPos(cells[j*w+i].pos())
+                    space, space, self.cellSize - 2 * space, 
+                    self.cellSize - 2 * space, pen, QBrush(Qt.blue))
+                fugitiveGraphic.setPos(cells[j * w + i].pos())
 
             temp = self.controller.state.split()
 
@@ -118,8 +118,8 @@ class Scene(QGraphicsScene):
         x = e.scenePos().x()
         y = e.scenePos().y()
         try:
-            i = int((x-self.border)/self.cellSpace)
-            j = int((y-self.border/2)/self.cellSpace-(i) % 2/2)     # Hexagonal
+            i = int((x - self.border) / self.cellSpace)
+            j = int((y - self.border  / 2) / self.cellSpace - (i) % 2 / 2)     # Hexagonal
             if i >= 0 and i < w and j >= 0 and j < h:
                 self.controller.condemn(i, j)
         except Exception:
@@ -135,12 +135,12 @@ class Scene(QGraphicsScene):
         if best:
             self.gbTxt = self.addText('BEST SCORE !', font)
             self.gbTxt.setDefaultTextColor(Qt.black)
-            self.gbTxt.setPos(6*self.l/20, 9*self.l/20)
+            self.gbTxt.setPos(6 * self.l / 20, 9 * self.l / 20)
             self.controller.save_score()
         else:
             self.gwTxt = self.addText('YOU WON !', font)
             self.gwTxt.setDefaultTextColor(Qt.black)
-            self.gwTxt.setPos(7*self.l/20, 9*self.l/20)
+            self.gwTxt.setPos(7 * self.l / 20, 9 * self.l / 20)
 
     def game_over(self):
         """Display appropriate message when player looses."""
@@ -151,7 +151,7 @@ class Scene(QGraphicsScene):
         font = QFont('Arial', 24, QFont.Bold)
         self.goTxt = self.addText('GAME OVER !', font)
         self.goTxt.setDefaultTextColor(Qt.black)
-        self.goTxt.setPos(6*self.l/20, 9*self.l/20)
+        self.goTxt.setPos(6 * self.l / 20, 9 * self.l / 20)
 
 
 class View(QGraphicsView):
@@ -206,7 +206,7 @@ class Params(QWidget):
         self.searchPath_button = QPushButton("Browse")
         self.save_button = QPushButton("Save game")
         self.b_score_lay = QLabel(f'Best score : {self.controller.best_score}')
-        self.score_lay = QLabel('Moves : '+str(self.controller.nbTurns))
+        self.score_lay = QLabel('Moves : ' + str(self.controller.nbTurns))
         self.log_box = message_box(self.controller)     # Message box
 
         # Default value
@@ -248,7 +248,7 @@ class Params(QWidget):
         self.setLayout(vLayout)
 
     def on_start(self):
-        """Initialise parameters"""
+        """Initialise parameters."""
         self.controller.w = self.gridWidth_box.value()
         self.controller.h = self.gridHeight_box.value()
         self.controller.nb_cond = self.gridInit_boxes.value()
@@ -286,7 +286,7 @@ class Params(QWidget):
 
     def change_level(self):
         """Trigger level change."""
-        print("Level changed to", int(self.level_box.currentIndex())+1)
+        print("Level changed to", int(self.level_box.currentIndex()) + 1)
         self.controller.choose_level(int(self.level_box.currentIndex()))
 
     def refresh(self):
