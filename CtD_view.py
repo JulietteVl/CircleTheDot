@@ -88,7 +88,7 @@ class Scene(QGraphicsScene):
             space = 2
             if i < w and j < h:
                 fugitiveGraphic = self.addEllipse(
-                    space, space, self.cellSize - 2 * space, 
+                    space, space, self.cellSize - 2 * space,
                     self.cellSize - 2 * space, pen, QBrush(Qt.blue))
                 fugitiveGraphic.setPos(cells[j * w + i].pos())
 
@@ -119,7 +119,7 @@ class Scene(QGraphicsScene):
         y = e.scenePos().y()
         try:
             i = int((x - self.border) / self.cellSpace)
-            j = int((y - self.border  / 2) / self.cellSpace - (i) % 2 / 2)     # Hexagonal
+            j = int((y - self.border / 2) / self.cellSpace - (i) % 2 / 2)     # Hexagonal
             if i >= 0 and i < w and j >= 0 and j < h:
                 self.controller.condemn(i, j)
         except Exception:
