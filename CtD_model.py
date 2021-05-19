@@ -38,16 +38,16 @@ class Fugitive:
         """
         # Give the coordinates of the 6 adjacent cases, excluding the condemned
         # ones.
-        choices = [(cx, cy+1),   # above
-                   (cx, cy-1),   # below
-                   (cx+1, cy),
-                   (cx-1, cy)]
+        choices = [(cx, cy + 1),   # above
+                   (cx, cy - 1),   # below
+                   (cx + 1, cy),
+                   (cx - 1, cy)]
         if cx % 2 == 0:   # this dependency is due to the grid being hexagonal.
-            choices.append((cx+1, cy-1))
-            choices.append((cx-1, cy-1))
+            choices.append((cx + 1, cy - 1))
+            choices.append((cx - 1, cy - 1))
         else:
-            choices.append((cx+1, cy+1))
-            choices.append((cx-1, cy+1))
+            choices.append((cx + 1, cy + 1))
+            choices.append((cx - 1, cy + 1))
 
         for c in choices.copy():
             if (c in board.l_cond):
@@ -82,14 +82,13 @@ class Fugitive:
         """
         paths = []
 
-        for p in range(board.height*board.width//10):
+        for p in range(board.height * board.width // 10):
             # The number of guesses is arbitrary
             state = "escaping"
             current_path = []
             cx = self.x
             cy = self.y
-            while (state == "escaping"
-                   and len(current_path) < 2*sqrt(board.height*board.width)):
+            while (state == "escaping" and len(current_path) < 2 * sqrt(board.height * board.width)):
                 # The length is arbitrary.
                 choices = self.get_choices(board, cx, cy)
                 for c in choices.copy():
@@ -141,8 +140,8 @@ class Fugitive:
         if (
                 (self.x < 1)
                 or (self.y < 1)
-                or (self.x >= board.width-1)
-                or (self.y >= board.height-1)
+                or (self.x >= board.width - 1)
+                or (self.y >= board.height - 1)
                 ):
             return("free 2")
         paths = []
@@ -153,7 +152,7 @@ class Fugitive:
         state = "escaping"
         while state == "escaping":
             for p in paths.copy():
-                ct = p[len(p)-1]
+                ct = p[len(p) - 1]
                 cx, cy = ct
                 choices = self.get_choices(board, cx, cy)
                 for c in choices.copy():
@@ -198,12 +197,12 @@ class Board:
 
         # Avoid being outside of the grid:
         self.fugitive = Fugitive(
-            (random.randint(max(int(self.width/2-self.fuy_width/2), 1),
-                            min(int(self.width/2+self.fuy_width/2),
-                                self.width-2))),
-            (random.randint(max(int(self.height/2-self.fuy_height/2), 1),
-                            min(int(self.height/2+self.fuy_height/2),
-                                self.height-2))))
+            (random.randint(max(int(self.width / 2 - self.fuy_width / 2), 1),
+                            min(int(self.width / 2 + self.fuy_width / 2),
+                                self.width - 2))),
+            (random.randint(max(int(self.height / 2 - self.fuy_height / 2), 1),
+                            min(int(self.height / 2 + self.fuy_height / 2),
+                                self.height - 2))))
         choices = []
         for i in range(self.width):
             for j in range(self.height):
