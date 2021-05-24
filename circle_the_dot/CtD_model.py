@@ -4,7 +4,6 @@ The model manages the data, logic and rules of the application.
 Classes:
     Fugitive
     Board
-<<<<<<< HEAD:circle_the_dot/CtD_model.py
 
 License:
     MIT License
@@ -16,8 +15,6 @@ License:
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
-=======
->>>>>>> 2b324f0d5c6dba27b7d7bdb8fc74553d1c820ba9:CtD_model.py
 """
 
 import random

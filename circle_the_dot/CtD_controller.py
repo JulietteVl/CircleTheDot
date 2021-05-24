@@ -2,7 +2,6 @@
 The controller connects the model and the view.
 
 Classes:
-<<<<<<< HEAD:circle_the_dot/CtD_controller.py
     BaseController
     CtDController
 
@@ -16,11 +15,6 @@ License:
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
-=======
-
-    BaseController
-    CtDController
->>>>>>> 2b324f0d5c6dba27b7d7bdb8fc74553d1c820ba9:CtD_controller.py
 """
 
 from PyQt5.QtCore import *
