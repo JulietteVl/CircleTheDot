@@ -1,11 +1,5 @@
 # CircleTheDot
 
-This game has been realised as a school project. We do not own the original idea of the game.
+This game has been realised as a school project and has been reformatted since. We do not own the original idea of the game.
 
-To launch, please download all the .py in the same folder and run CtD_view.py.
-
-Possible upgrades:
-- Reverse game
-- Artificial intelligence for the blocs
-- Computer vs computer
-- Main menu
+To launch, please download the code and run CtD_view.py.

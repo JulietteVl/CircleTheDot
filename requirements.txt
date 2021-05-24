@@ -1,3 +1,7 @@
 PyQt5
 
+<<<<<<< HEAD
 # random, math, os, pickle are part of the standard library in Python
+=======
+# random, math, os , pickle are part of the standard library in Python
+>>>>>>> 2b324f0d5c6dba27b7d7bdb8fc74553d1c820ba9

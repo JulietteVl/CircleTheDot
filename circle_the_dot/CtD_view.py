@@ -2,6 +2,10 @@
 The view manages the user interface.
 
 Classes:
+<<<<<<< HEAD:circle_the_dot/CtD_view.py
+=======
+
+>>>>>>> 2b324f0d5c6dba27b7d7bdb8fc74553d1c820ba9:CtD_view.py
     Scene
     View
     Message box
@@ -10,6 +14,7 @@ Classes:
     Window
 
 Function:
+<<<<<<< HEAD:circle_the_dot/CtD_view.py
     main
 
 License:
@@ -22,6 +27,10 @@ License:
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
+=======
+
+    main
+>>>>>>> 2b324f0d5c6dba27b7d7bdb8fc74553d1c820ba9:CtD_view.py
 """
 
 import os
