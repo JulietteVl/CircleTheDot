@@ -1,0 +1,3 @@
+PyQt5
+
+# random, math, os , pickle are part of the standard library in Python
